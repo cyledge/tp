@@ -16,10 +16,14 @@ import seedu.address.model.tag.Tag;
  */
 public class Person {
 
+    // TODO: Remove all dependencies to this class, make class abstract
+    // Remove address field
+
     // Identity fields
     private final Name name;
     private final Phone phone;
     private final Email email;
+    private final NRIC nric;
 
     // Data fields
     private final Address address;
