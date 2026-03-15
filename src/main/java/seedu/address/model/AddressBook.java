@@ -47,6 +47,11 @@ public class AddressBook implements ReadOnlyAddressBook {
      * {@code persons} must not contain duplicate persons.
      */
     public void setPersons(List<Person> persons) {
+        for (Person p : persons) {
+            if (p.getId() == 0) {
+                p.setId(getNextId());
+            }
+        }
         this.persons.setPersons(persons);
     }
 
@@ -87,6 +92,11 @@ public class AddressBook implements ReadOnlyAddressBook {
      * Returns the next available ID and increments the counter
      */
     public int getNextId() {
+        int maxId = persons.stream()
+                .mapToInt(Person::getId)
+                .max()
+                .orElse(0);
+        nextId = maxId + 1;
         return nextId++;
     }
 
@@ -99,6 +109,10 @@ public class AddressBook implements ReadOnlyAddressBook {
     public void setPerson(Person target, Person editedPerson) {
         requireNonNull(editedPerson);
 
+        // assign new patient id if editedPerson has no id
+        if (editedPerson.getId() == 0) {
+            editedPerson.setId(getNextId());
+        }
         persons.setPerson(target, editedPerson);
     }
 

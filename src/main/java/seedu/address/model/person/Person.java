@@ -4,6 +4,7 @@ import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
@@ -17,13 +18,14 @@ public class Person {
 
     // default id for patient who has yet been assigned with an ID
     private static final int DEFAULT_ID = 0;
+    // will be used later
     private static final String ID_FORMAT = "P%03d";
 
     // Identity fields
     private final Name name;
     private final Phone phone;
     private final Email email;
-    private final int id;
+    private int id;
 
     // Data fields
     private final Address address;
@@ -79,6 +81,10 @@ public class Person {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
 
     /**
      * Returns an immutable tag set, which throws {@code UnsupportedOperationException}
@@ -98,6 +104,7 @@ public class Person {
         }
 
         return otherPerson != null
+                && otherPerson.getId() == getId()
                 && otherPerson.getName().equals(getName());
     }
 
@@ -129,7 +136,7 @@ public class Person {
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return id;
+        return Objects.hash(id, name, phone, email, address, tags);
     }
 
     @Override
