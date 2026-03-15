@@ -292,27 +292,62 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 (For all use cases below, the **System** is the `AddressBook` and the **Actor** is the `user`, unless specified otherwise)
 
-**Use case: Delete a person**
+**Use case: UC1 - Add New Patient Record**
 
-**MSS**
 
-1. User requests to list persons
-2. AddressBook shows a list of persons
-3. User requests to delete a specific person in the list
-4. AddressBook deletes the person
-
-   Use case ends.
+**MSS**  
+1.  User requests to add a new patient.
+2.  ClinicBook requests for patient details.
+3.  User enters the patient's details.
+4.  User submits the details.
+5.  ClinicBook shows the details for confirmation.
+6.  User confirms.
+7.  ClinicBook adds the record.
+    Use case ends.  
 
 **Extensions**
+* 4a. ClinicBook finds a duplicate record with the same NRIC
+    * 4a1. ClinicBook shows the potential duplicate record.
+    * Use case ends.
 
-* 2a. The list is empty.
+* 4b. ClinicBook find a duplicate record with the same name or phone number
+    * 4b1. ClinicBook shows the potential duplicate record.
+    * 4b2. ClinicBook requests for confirmation.
+    * 4b3. User amends if needed.
+    * 4b4. User confirms.
+    * Use case resumes at Step 7.
 
-  Use case ends.
-* 3a. The given index is invalid.
+* 4c. Invalid input
+    * 4c1. ClinicBook shows an error message indicating a correct input format.
+    * Use case resumes at Step 2.
 
+* 5a. User wants to edit
+    * 5a1. User retracts the submission
+    * Use case resumes at Step 2
+ 
+* 5b. User doesn't want to add this record anymore
+    * 5b1. User cancels the submission
+    * Use case ends.
+
+
+
+**Use case: UC2 - Get Patient's Medical History**
+
+**MSS**
+1.  User requests to view patient's medical history.
+2.  ClinicBook requests for patient's information, NRIC / name.
+3.  User provides patient's NRIC / Name.
+4.  ClinicBook shows the medical history of this user.
+    Use case ends.
+
+**Extensions**
+* 2a. ClinicBook cannot find the record
+   * 2a1. ClinicBook notifies the user that no records was found.
+   Use case ends.
+
+* 3a. The given NRIC is invalid.
   * 3a1. AddressBook shows an error message.
-
-    Use case resumes at step 2.
+   Use case resumes at step 2.
 
 
 
@@ -367,23 +402,25 @@ Use case ends.
 
 **Extensions**
 
-* 4a. At least one of the fields (name, NRIC, contact number) are empty
-  4a1. ClinicBook requests for values for these fields
-  4a2. System Administrator enters data for the missing fields
-  Steps 4a1 - 4a2 are repeated until the missing fields are filled
+* 3a. At least one of the fields (name, NRIC, contact number) are empty
+  3a1. ClinicBook requests for values for these fields
+  3a2. System Administrator enters data for the missing fields
+  Steps 3a1 - 3a2 are repeated until the missing fields are filled
   Use case resumes at step 4.
 
-* 4b. ClinicBook finds a duplicate doctor with the same NRIC
-  4b1. ClinicBook shows the duplicate record
+* 3b. ClinicBook finds a duplicate doctor with the same NRIC
+  3b1. ClinicBook shows the duplicate record
   Use case ends.
+
+* 3c. System Administrator enters invalid input.
+* 3c1. ClinicBook shows an error message indicating the correct input format.
+* 3c2. System Administrator re-enters the particulars.
+  Use case resumes at step 4.
 
 * *a. At any time, System Administrator chooses to cancel the doctor registration
   *a1. ClinicBook requests to confirm cancellation.
   *a2. System Administrator confirms
   Use case ends.
-
-
-
 
 *{More to be added}*
 
@@ -395,13 +432,25 @@ Use case ends.
 4. The system should be able to recover gracefully from unexpected shutdowns without data loss for committed transactions.
 5. The application should handle invalid or malformed data files without crashing and provide appropriate error messages.
 
+### Non-Functional Requirements
+
+1.  Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
+2.  Should be able to hold up to 1000 persons without a noticeable sluggishness in performance for typical usage.
+3.  A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
+4.  All operations should complete within 2 seconds
+5.  The system supports only one user accessing the data at a time.
+6.  Data should persist unless the user deletes the data file.
+
+
 ### Glossary
 
 * **Diagnosis**: A medical description of a patient's condition or disease based on symptoms, medical history, and clinical examination
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
 * **Prescription**: A written order from a doctor specifying medication, dosage, and administration instructions for a patient's treatment
 * **Private contact detail**: A contact detail that is not meant to be shared with others
-* **Symptoms**: Physical or mental signs experienced by a patient that indicate a medical condition or disease
+* **Symptom**: Physical or mental signs experienced by a patient that indicate a medical condition or disease
+* **Patient Record**: A record containing a patient's medical history that can be identified using the patient's NRIC
+* **Duplicate Record**: A record with the same NRIC / Name / Phone Number
 
 ---
 
