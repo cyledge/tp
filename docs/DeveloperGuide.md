@@ -574,7 +574,7 @@ Use case ends.
 * **NRIC**: National Registration Identity Card number used as a unique identifier for individuals in the system.
 * **System User**: Any individual registered in ClinicBook, such as a patient, doctor, or pharmacist.
 
---------------------------------------------------------------------------------------------------------------------
+---
 
 ## **Appendix: Instructions for manual testing**
 
