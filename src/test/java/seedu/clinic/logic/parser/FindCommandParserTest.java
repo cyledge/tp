@@ -1,11 +1,11 @@
 package seedu.clinic.logic.parser;
 
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static seedu.address.logic.Messages.getErrorMessageForDuplicatePrefixes;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
-import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
-import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
+import static seedu.clinic.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.clinic.logic.Messages.getErrorMessageForDuplicatePrefixes;
+import static seedu.clinic.logic.parser.CliSyntax.PREFIX_NAME;
+import static seedu.clinic.logic.parser.CliSyntax.PREFIX_PHONE;
+import static seedu.clinic.logic.parser.CommandParserTestUtil.assertParseFailure;
+import static seedu.clinic.logic.parser.CommandParserTestUtil.assertParseSuccess;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,9 +13,9 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
-import seedu.address.logic.commands.FindCommand;
-import seedu.address.model.person.PersonMatchesFindCriteriaPredicate;
-import seedu.address.model.person.Phone;
+import seedu.clinic.logic.commands.FindCommand;
+import seedu.clinic.model.person.PersonMatchesFindCriteriaPredicate;
+import seedu.clinic.model.person.Phone;
 
 public class FindCommandParserTest {
 

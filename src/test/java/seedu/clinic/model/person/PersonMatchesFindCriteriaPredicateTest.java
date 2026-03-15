@@ -1,4 +1,4 @@
-package seedu.address.model.person;
+package seedu.clinic.model.person;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -11,7 +11,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
-import seedu.address.testutil.PersonBuilder;
+import seedu.clinic.testutil.PersonBuilder;
 
 public class PersonMatchesFindCriteriaPredicateTest {
 

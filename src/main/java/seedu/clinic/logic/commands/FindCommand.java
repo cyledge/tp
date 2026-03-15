@@ -2,10 +2,10 @@ package seedu.clinic.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 
-import seedu.address.commons.util.ToStringBuilder;
-import seedu.address.logic.Messages;
-import seedu.address.model.Model;
-import seedu.address.model.person.NameContainsKeywordsPredicate;
+import seedu.clinic.commons.util.ToStringBuilder;
+import seedu.clinic.logic.Messages;
+import seedu.clinic.model.Model;
+import seedu.clinic.model.person.PersonMatchesFindCriteriaPredicate;
 
 /**
  * Finds and lists all persons in address book whose name contains any of the argument keywords.

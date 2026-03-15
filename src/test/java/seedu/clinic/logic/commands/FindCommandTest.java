@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.clinic.logic.Messages.MESSAGE_PERSONS_LISTED_OVERVIEW;
 import static seedu.clinic.logic.commands.CommandTestUtil.assertCommandSuccess;
+import static seedu.clinic.testutil.TypicalPersons.ALICE;
+import static seedu.clinic.testutil.TypicalPersons.BENSON;
 import static seedu.clinic.testutil.TypicalPersons.CARL;
 import static seedu.clinic.testutil.TypicalPersons.ELLE;
 import static seedu.clinic.testutil.TypicalPersons.FIONA;
@@ -19,7 +21,8 @@ import org.junit.jupiter.api.Test;
 import seedu.clinic.model.Model;
 import seedu.clinic.model.ModelManager;
 import seedu.clinic.model.UserPrefs;
-import seedu.clinic.model.person.NameContainsKeywordsPredicate;
+import seedu.clinic.model.person.PersonMatchesFindCriteriaPredicate;
+import seedu.clinic.model.person.Phone;
 
 /**
  * Contains integration tests (interaction with the Model) for {@code FindCommand}.

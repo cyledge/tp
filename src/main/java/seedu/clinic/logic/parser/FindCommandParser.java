@@ -1,6 +1,8 @@
 package seedu.clinic.logic.parser;
 
 import static seedu.clinic.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.clinic.logic.parser.CliSyntax.PREFIX_NAME;
+import static seedu.clinic.logic.parser.CliSyntax.PREFIX_PHONE;
 
 import java.util.Arrays;
 import java.util.List;
@@ -9,7 +11,8 @@ import java.util.stream.Stream;
 
 import seedu.clinic.logic.commands.FindCommand;
 import seedu.clinic.logic.parser.exceptions.ParseException;
-import seedu.clinic.model.person.NameContainsKeywordsPredicate;
+import seedu.clinic.model.person.PersonMatchesFindCriteriaPredicate;
+import seedu.clinic.model.person.Phone;
 
 /**
  * Parses input arguments and creates a new FindCommand object

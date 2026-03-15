@@ -1,4 +1,4 @@
-package seedu.address.model.person;
+package seedu.clinic.model.person;
 
 import static java.util.Objects.requireNonNull;
 
@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import seedu.address.commons.util.StringUtil;
-import seedu.address.commons.util.ToStringBuilder;
+import seedu.clinic.commons.util.StringUtil;
+import seedu.clinic.commons.util.ToStringBuilder;
 
 /**
  * Tests that a {@code Person}'s name or phone matches the supplied find criteria.

@@ -14,22 +14,22 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
-import seedu.address.logic.commands.AddCommand;
-import seedu.address.logic.commands.ClearCommand;
-import seedu.address.logic.commands.DeleteCommand;
-import seedu.address.logic.commands.EditCommand;
-import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
-import seedu.address.logic.commands.ExitCommand;
-import seedu.address.logic.commands.FindCommand;
-import seedu.address.logic.commands.HelpCommand;
-import seedu.address.logic.commands.ListCommand;
-import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.person.Person;
-import seedu.address.model.person.PersonMatchesFindCriteriaPredicate;
-import seedu.address.model.person.Phone;
-import seedu.address.testutil.EditPersonDescriptorBuilder;
-import seedu.address.testutil.PersonBuilder;
-import seedu.address.testutil.PersonUtil;
+import seedu.clinic.logic.commands.AddCommand;
+import seedu.clinic.logic.commands.ClearCommand;
+import seedu.clinic.logic.commands.DeleteCommand;
+import seedu.clinic.logic.commands.EditCommand;
+import seedu.clinic.logic.commands.EditCommand.EditPersonDescriptor;
+import seedu.clinic.logic.commands.ExitCommand;
+import seedu.clinic.logic.commands.FindCommand;
+import seedu.clinic.logic.commands.HelpCommand;
+import seedu.clinic.logic.commands.ListCommand;
+import seedu.clinic.logic.parser.exceptions.ParseException;
+import seedu.clinic.model.person.Person;
+import seedu.clinic.model.person.PersonMatchesFindCriteriaPredicate;
+import seedu.clinic.model.person.Phone;
+import seedu.clinic.testutil.EditPersonDescriptorBuilder;
+import seedu.clinic.testutil.PersonBuilder;
+import seedu.clinic.testutil.PersonUtil;
 
 public class ClinicBookParserTest {
 
