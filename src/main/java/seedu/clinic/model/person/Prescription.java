@@ -1,11 +1,16 @@
-package seedu.address.model.person;
+package seedu.clinic.model.person;
 
-import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
-import static seedu.address.commons.util.AppUtil.checkArgument;
+import static seedu.clinic.commons.util.CollectionUtil.requireAllNonNull;
+import static seedu.clinic.commons.util.AppUtil.checkArgument;
+
+import seedu.clinic.commons.util.ToStringBuilder;
 
 /**
- * Represents a prescription attached to a diagnosis.
- * Guarantees: immutable; all fields are non-null and non-blank.
+ * Represents a prescription for medication.
+ *
+ * TODO: Add isFulfilled boolean flag for prescription status
+ * TODO: Implement dispensePrescription() to mark fulfilled prescriptions
+ * TODO: Implement getSummary() method for prescription slip
  */
 public class Prescription {
 
@@ -55,8 +60,12 @@ public class Prescription {
 
     @Override
     public String toString() {
-        return medicationName + " (" + dosage + ", " + frequency + ", dispensedBy="
-            + dispensedBy.getName() + ")";
+        return new ToStringBuilder(this)
+                .add("medicationName", medicationName)
+                .add("dosage", dosage)
+                .add("frequency", frequency)
+                .add("dispensedBy", dispensedBy)
+                .toString();
     }
 
     @Override
@@ -72,8 +81,8 @@ public class Prescription {
         Prescription otherPrescription = (Prescription) other;
         return medicationName.equals(otherPrescription.medicationName)
                 && dosage.equals(otherPrescription.dosage)
-            && frequency.equals(otherPrescription.frequency)
-            && dispensedBy.equals(otherPrescription.dispensedBy);
+                && frequency.equals(otherPrescription.frequency)
+                && dispensedBy.equals(otherPrescription.dispensedBy);
     }
 
     @Override

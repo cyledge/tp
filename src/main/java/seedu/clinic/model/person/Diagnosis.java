@@ -1,18 +1,21 @@
-package seedu.address.model.person;
+package seedu.clinic.model.person;
 
-import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
-import static seedu.address.commons.util.AppUtil.checkArgument;
+import static seedu.clinic.commons.util.CollectionUtil.requireAllNonNull;
+import static seedu.clinic.commons.util.AppUtil.checkArgument;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
-import seedu.address.commons.util.ToStringBuilder;
+import seedu.clinic.commons.util.ToStringBuilder;
 
 /**
- * Represents a diagnosis attached to a patient.
- * Guarantees: immutable; is valid as declared in {@link #isValidDiagnosis(String)}.
+ * Represents a medical diagnosis when a Doctor sees a Patient.
+ *
+ * TODO: Change to visitDate:LocalDateTime
+ * TODO: Implement generateMedicalCertificate() for medical certificates
  */
 public class Diagnosis {
 
@@ -20,7 +23,7 @@ public class Diagnosis {
             "Diagnosis descriptions should not be blank";
     public static final String VALIDATION_REGEX = "[^\\s].*";
 
-    private final String value;
+    private final String description;
     private final LocalDate visitDate;
     private final Doctor diagnosedBy;
     private final List<String> symptoms = new ArrayList<>();
@@ -35,7 +38,7 @@ public class Diagnosis {
     public Diagnosis(String diagnosis, Doctor diagnosedBy) {
         requireAllNonNull(diagnosis, diagnosedBy);
         checkArgument(isValidDiagnosis(diagnosis), MESSAGE_CONSTRAINTS);
-        value = diagnosis;
+        description = diagnosis;
         visitDate = null;
         this.diagnosedBy = diagnosedBy;
     }
@@ -50,7 +53,7 @@ public class Diagnosis {
     public Diagnosis(String diagnosis, LocalDate visitDate, Doctor diagnosedBy) {
         requireAllNonNull(diagnosis, visitDate, diagnosedBy);
         checkArgument(isValidDiagnosis(diagnosis), MESSAGE_CONSTRAINTS);
-        value = diagnosis;
+        description = diagnosis;
         this.visitDate = visitDate;
         this.diagnosedBy = diagnosedBy;
     }
@@ -69,6 +72,10 @@ public class Diagnosis {
 
     public Doctor getDiagnosedBy() {
         return diagnosedBy;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public void addSymptom(String symptom) {
@@ -103,9 +110,9 @@ public class Diagnosis {
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .add("value", value)
+                .add("description", description)
                 .add("visitDate", visitDate)
-            .add("diagnosedBy", diagnosedBy)
+                .add("diagnosedBy", diagnosedBy)
                 .add("symptoms", symptoms)
                 .add("prescriptions", prescriptions)
                 .toString();
@@ -122,8 +129,8 @@ public class Diagnosis {
         }
 
         Diagnosis otherDiagnosis = (Diagnosis) other;
-        return value.equals(otherDiagnosis.value)
-                && java.util.Objects.equals(visitDate, otherDiagnosis.visitDate)
+        return description.equals(otherDiagnosis.description)
+                && Objects.equals(visitDate, otherDiagnosis.visitDate)
                 && diagnosedBy.equals(otherDiagnosis.diagnosedBy)
                 && symptoms.equals(otherDiagnosis.symptoms)
                 && prescriptions.equals(otherDiagnosis.prescriptions);
@@ -131,6 +138,6 @@ public class Diagnosis {
 
     @Override
     public int hashCode() {
-        return java.util.Objects.hash(value, visitDate, diagnosedBy, symptoms, prescriptions);
+        return Objects.hash(description, visitDate, diagnosedBy, symptoms, prescriptions);
     }
 }

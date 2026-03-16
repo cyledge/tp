@@ -1,7 +1,7 @@
-package seedu.address.model.person;
+package seedu.clinic.model.person;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.commons.util.AppUtil.checkArgument;
+import static seedu.clinic.commons.util.AppUtil.checkArgument;
 
 /**
  * Represents a Singapore NRIC in the address book.

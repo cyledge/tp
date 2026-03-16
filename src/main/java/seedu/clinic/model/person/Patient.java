@@ -1,19 +1,33 @@
-package seedu.address.model.person;
+package seedu.clinic.model.person;
 
-import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
+import static seedu.clinic.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
-import seedu.address.model.tag.Tag;
+import seedu.clinic.model.tag.Tag;
 
 /**
- * Represents a patient in the address book.
+ * Represents a Patient in the clinic.
+ * A Patient is a Person who receives medical services.
+ *
+ * TODO: Replace emergencyContact string with EmergencyContact objects collection
+ * TODO: Add Sex enum field for biological sex
+ * TODO: Use Set<EmergencyContact> instead of String for emergency contacts
+ * TODO: Implement allergies management
+ * TODO: Create patientId field
+ * TODO: Extract address to separate structure
  */
-public class Patient extends Person {
+public class Patient extends ContactPerson {
+
+	// TODO: Implement patientId field
+	// This constant will be used to initialize patientId field
+	private static final int DEFAULT_PATIENT_ID = 0;
 
 	private final NRIC nric;
 	private final LocalDate dateOfBirth;
@@ -33,6 +47,18 @@ public class Patient extends Person {
 	}
 
 	/**
+	 * Constructs a Patient with ID.
+	 */
+	public Patient(Name name, Phone phone, Email email, Address address, Set<Tag> tags,
+			NRIC nric, LocalDate dateOfBirth, String emergencyContact, int id) {
+		super(name, phone, email, address, tags, id);
+		requireAllNonNull(nric, dateOfBirth, emergencyContact);
+		this.nric = nric;
+		this.dateOfBirth = dateOfBirth;
+		this.emergencyContact = emergencyContact;
+	}
+
+	/**
 	 * Reuses an existing person as the shared identity and contact details for a patient.
 	 */
 	public Patient(Person person, NRIC nric, LocalDate dob, String emergencyContact) {
@@ -40,12 +66,20 @@ public class Patient extends Person {
 				nric, dob, emergencyContact);
 	}
 
+	@Override
 	public NRIC getNric() {
 		return nric;
 	}
 
 	public LocalDate getDateOfBirth() {
 		return dateOfBirth;
+	}
+
+	/**
+	 * Returns the age of the patient in years.
+	 */
+	public int getAge() {
+		return Period.between(dateOfBirth, LocalDate.now()).getYears();
 	}
 
 	public String getEmergencyContact() {
@@ -86,6 +120,6 @@ public class Patient extends Person {
 
 	@Override
 	public int hashCode() {
-		return java.util.Objects.hash(super.hashCode(), nric, dateOfBirth, emergencyContact, diagnoses);
+		return Objects.hash(super.hashCode(), nric, dateOfBirth, emergencyContact, diagnoses);
 	}
 }

@@ -1,9 +1,9 @@
-package seedu.address.model.person;
+package seedu.clinic.model.person;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static seedu.address.testutil.Assert.assertThrows;
+import static seedu.clinic.testutil.Assert.assertThrows;
 
 import java.time.LocalDate;
 import java.util.Collections;

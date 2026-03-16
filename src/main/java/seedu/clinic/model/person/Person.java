@@ -13,18 +13,21 @@ import seedu.clinic.model.tag.Tag;
 /**
  * Represents a Person in clinic book.
  * Guarantees: details are present and not null, field values are validated, immutable.
+ *
+ * TODO: Make `Person` class abstract
+ * TODO: Remove Address field and move to Patient subclass
+ * TODO: Remove Tags field from Person
+ * TODO: Simplify constructor to only require Name
+ * TODO: Remove ID management from Person - implement in Staff/Patient subclasses
+ * TODO: Implement automatic ID generation and formatting using ID_FORMAT
  */
 public class Person {
 
-    // TODO: Remove all dependencies to this class, make class abstract
-    // Remove address field
-    // default id for patient who has yet been assigned with an ID
+    // TODO: Move this to Staff/Patient subclasses
     private static final int DEFAULT_ID = 0;
-    // will be used later
+    // TODO: Implement ID_FORMAT usage in automatic ID assignment (e.g., P001, P002)
+    // This format will be used when generating IDs from DEFAULT_ID or similar constants
     private static final String ID_FORMAT = "P%03d";
-
-    // Identity fields
-    private static final NRIC DEFAULT_NRIC = new NRIC("S0000000J");
 
     private final Name name;
     private final NRIC nric;
@@ -33,7 +36,9 @@ public class Person {
     private int id;
 
     // Data fields
+    // TODO: Move Address to Patient
     private final Address address;
+    // TODO: Remove Tags
     private final Set<Tag> tags = new HashSet<>();
 
 
@@ -44,6 +49,7 @@ public class Person {
     public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, int id) {
         requireAllNonNull(name, phone, email, address, tags);
         this.name = name;
+        this.nric = null;
         this.phone = phone;
         this.email = email;
         this.address = address;
@@ -56,7 +62,7 @@ public class Person {
      * ID will then be assigned by ClinicBook
      */
     public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags) {
-        this(name, DEFAULT_NRIC, phone, email, address, tags);
+        this(name, phone, email, address, tags, DEFAULT_ID);
     }
 
     /**
