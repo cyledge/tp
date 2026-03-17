@@ -869,7 +869,6 @@ Use case ends.
   * 3b2. Patient re-enters the contact information. 
   * Use case resumes at step 4.
 
-*{More to be added}*
 
 
 ### Non-Functional Requirements
