@@ -9,6 +9,7 @@ import static seedu.clinic.testutil.Assert.assertThrows;
 import static seedu.clinic.testutil.TypicalPersons.ALICE;
 import static seedu.clinic.testutil.TypicalPersons.getTypicalClinicBook;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,6 +19,8 @@ import org.junit.jupiter.api.Test;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import seedu.clinic.model.person.NRIC;
+import seedu.clinic.model.person.Patient;
 import seedu.clinic.model.person.Person;
 import seedu.clinic.model.person.exceptions.DuplicatePersonException;
 import seedu.clinic.testutil.PersonBuilder;
@@ -76,6 +79,20 @@ public class ClinicBookTest {
         Person editedAlice = new PersonBuilder(ALICE).withAddress(VALID_ADDRESS_BOB).withTags(VALID_TAG_HUSBAND)
                 .build();
         assertTrue(clinicBook.hasPerson(editedAlice));
+    }
+
+    @Test
+    public void addPatient_defaultId_preservesPatientSubtypeAndAssignsId() {
+        Patient patient = new Patient(new PersonBuilder().withName("Nadia Tan").withPhone("93456789")
+                .withEmail("nadiatan@example.com").withAddress("Blk 10 Bedok North Ave 2, #03-12")
+                .withTags("patient").build(), new NRIC("S1234567D"), LocalDate.of(1992, 4, 12), "Amir Tan");
+
+        clinicBook.addPerson(patient);
+
+        Person storedPerson = clinicBook.getPersonList().get(0);
+        assertTrue(storedPerson instanceof Patient);
+        assertTrue(storedPerson.getId() > 0);
+        assertEquals(new NRIC("S1234567D"), ((Patient) storedPerson).getNric());
     }
 
     @Test

@@ -31,18 +31,18 @@ import seedu.clinic.testutil.PersonBuilder;
  * Contains integration tests (interaction with the Model) for {@code FindCommand}.
  */
 public class FindCommandTest {
-    private static final Patient NADIA = new Patient(
-            new PersonBuilder().withId(100).withName("Nadia Tan").withPhone("93456789")
-                    .withEmail("nadiatan@example.com").withAddress("Blk 10 Bedok North Ave 2, #03-12")
-                    .withTags("patient").build(),
-            new NRIC("S1234567D"), LocalDate.of(1992, 4, 12), "Amir Tan");
-
     private Model model = new ModelManager(getTypicalClinicBookWithPatient(), new UserPrefs());
-    private Model expectedModel = new ModelManager(getTypicalClinicBookWithPatient(), new UserPrefs());
+    private Model expectedModel = new ModelManager(model.getClinicBook(), new UserPrefs());
+
+    private static Patient createNadia() {
+        return new Patient(new PersonBuilder().withName("Nadia Tan").withPhone("93456789")
+                .withEmail("nadiatan@example.com").withAddress("Blk 10 Bedok North Ave 2, #03-12")
+                .withTags("patient").build(), new NRIC("S1234567D"), LocalDate.of(1992, 4, 12), "Amir Tan");
+    }
 
     private static seedu.clinic.model.ClinicBook getTypicalClinicBookWithPatient() {
         seedu.clinic.model.ClinicBook clinicBook = getTypicalClinicBook();
-        clinicBook.addPerson(NADIA);
+        clinicBook.addPerson(createNadia());
         return clinicBook;
     }
 
@@ -130,7 +130,10 @@ public class FindCommandTest {
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredPersonList(predicate);
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
-        assertEquals(Collections.singletonList(NADIA), model.getFilteredPersonList());
+        Patient nadia = (Patient) model.getFilteredPersonList().get(0);
+        assertEquals(1, model.getFilteredPersonList().size());
+        assertEquals(new NRIC("S1234567D"), nadia.getNric());
+        assertEquals("Nadia Tan", nadia.getName().fullName);
     }
 
     @Test
