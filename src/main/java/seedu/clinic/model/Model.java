@@ -5,7 +5,9 @@ import java.util.function.Predicate;
 
 import javafx.collections.ObservableList;
 import seedu.clinic.commons.core.GuiSettings;
+import seedu.clinic.model.person.Doctor;
 import seedu.clinic.model.person.Person;
+import seedu.clinic.model.person.Staff;
 
 /**
  * The API of the Model component.
@@ -68,6 +70,12 @@ public interface Model {
      * {@code person} must not already exist in clinic book.
      */
     void addPerson(Person person);
+
+    /**
+     * Adds the given doctor.
+     * {@code doctor} must not already exist in clinic book.
+     */
+    void addDoctor(Doctor doctor);
 
     /**
      * Replaces the given person {@code target} with {@code editedPerson}.

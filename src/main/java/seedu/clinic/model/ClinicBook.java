@@ -6,7 +6,9 @@ import java.util.List;
 
 import javafx.collections.ObservableList;
 import seedu.clinic.commons.util.ToStringBuilder;
+import seedu.clinic.model.person.Doctor;
 import seedu.clinic.model.person.Person;
+import seedu.clinic.model.person.Staff;
 import seedu.clinic.model.person.UniquePersonList;
 
 /**
@@ -16,6 +18,7 @@ import seedu.clinic.model.person.UniquePersonList;
 public class ClinicBook implements ReadOnlyClinicBook {
 
     private final UniquePersonList persons;
+    private final UniquePersonList doctors;
     // id counter for Patient
     private int nextId = 1;
 
@@ -28,6 +31,7 @@ public class ClinicBook implements ReadOnlyClinicBook {
      */
     {
         persons = new UniquePersonList();
+        doctors = new UniquePersonList();
     }
 
     public ClinicBook() {}
@@ -86,6 +90,19 @@ public class ClinicBook implements ReadOnlyClinicBook {
                     p.getAddress(), p.getTags(), newId);
         }
         persons.add(p);
+    }
+
+    /**
+     * Adds a doctor to clinic book.
+     * The doctor must not already exist in clinic book.
+     */
+    public void addDoctor(Doctor d) {
+        // If ID is 0 (default), assign a new one
+        if (d.getId() == 0) {
+            int newId = getNextId();
+            d = new Doctor(d.getName(), d.getPhone(), d.getEmail(), newId);
+        }
+        doctors.add(d);
     }
 
     /**

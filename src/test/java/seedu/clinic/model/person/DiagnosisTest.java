@@ -15,8 +15,7 @@ public class DiagnosisTest {
     private static final Doctor DEFAULT_DOCTOR = new Doctor(
             new Name("Doctor One"),
             new Phone("92345678"),
-            new Email("doctor@example.com"),
-            Collections.emptySet());
+            new Email("doctor@example.com"));
 
     private static final Pharmacist DEFAULT_PHARMACIST = new Pharmacist(
             new Name("Pharmacist One"),

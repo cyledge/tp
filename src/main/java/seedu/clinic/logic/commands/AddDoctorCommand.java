@@ -7,6 +7,7 @@ import static seedu.clinic.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.clinic.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.clinic.logic.parser.CliSyntax.PREFIX_TAG;
 
+import seedu.clinic.commons.util.ToStringBuilder;
 import seedu.clinic.logic.commands.exceptions.CommandException;
 import seedu.clinic.model.Model;
 import seedu.clinic.model.person.Doctor;
@@ -23,15 +24,13 @@ public class AddDoctorCommand extends Command {
             + PREFIX_NAME + "NAME "
             + PREFIX_PHONE + "PHONE "
             + PREFIX_EMAIL + "EMAIL "
-            + PREFIX_ADDRESS + "ADDRESS "
-            + "[" + PREFIX_TAG + "TAG]...\n"
+            //+ "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_NAME + "John Doe "
             + PREFIX_PHONE + "98765432 "
-            + PREFIX_EMAIL + "johnd@example.com "
-            + PREFIX_ADDRESS + "311, Clementi Ave 2, #02-25 "
-            + PREFIX_TAG + "senior "
-            + PREFIX_TAG + "surgeon";
+            + PREFIX_EMAIL + "johnd@example.com ";
+            //+ PREFIX_TAG + "senior "
+            //+ PREFIX_TAG + "surgeon";
 
     public static final String MESSAGE_SUCCESS = "New doctor added: %1$s";
     public static final String MESSAGE_DUPLICATE_PERSON = "This doctor already exists in the address book";
@@ -54,14 +53,29 @@ public class AddDoctorCommand extends Command {
             throw new CommandException(MESSAGE_DUPLICATE_PERSON);
         }
 
-        model.addPerson(toAdd);
+        model.addDoctor(toAdd);
         return new CommandResult(String.format(MESSAGE_SUCCESS, toAdd));
     }
 
     @Override
     public boolean equals(Object other) {
-        return other == this // short circuit if same object
-                || (other instanceof AddDoctorCommand // instanceof handles nulls
-                && toAdd.equals(((AddDoctorCommand) other).toAdd));
+        if (other == this) {
+            return true;
+        }
+
+        // instanceof handles nulls
+        if (!(other instanceof AddDoctorCommand)) {
+            return false;
+        }
+
+        AddDoctorCommand otherAddCommand = (AddDoctorCommand) other;
+        return toAdd.equals(otherAddCommand.toAdd);
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .add("toAdd", toAdd)
+                .toString();
     }
 }

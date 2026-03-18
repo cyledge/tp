@@ -17,18 +17,21 @@ import seedu.clinic.model.tag.Tag;
  */
 public class Doctor extends Staff {
 
-    private final Set<Tag> tags = new HashSet<>();
+    //private final Set<Tag> tags = new HashSet<>();
 
+
+
+    /*
+    public Doctor(Name name, Phone phone, Email email, Set<Tag> tags) {
+        super(name, phone, email);
+        this.tags.addAll(tags);
+    }
+     */
 
     /**
      * Constructs a Doctor with the given details.
      * Every field must be present and not null.
      */
-    public Doctor(Name name, Phone phone, Email email, Set<Tag> tags) {
-        super(name, phone, email);
-        this.tags.addAll(tags);
-    }
-
     public Doctor(Name name, Phone phone, Email email) {
         super(name, phone, email);
     }
@@ -36,7 +39,7 @@ public class Doctor extends Staff {
     /**
      * Constructs a Doctor with the given details including ID.
      */
-    public Doctor(Name name, Phone phone, Email email, Address address, Set<Tag> tags, int id) {
+    public Doctor(Name name, Phone phone, Email email, int id) {
         super(name, phone, email, id);
     }
 
