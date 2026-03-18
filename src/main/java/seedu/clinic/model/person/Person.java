@@ -13,22 +13,31 @@ import seedu.clinic.model.tag.Tag;
 /**
  * Represents a Person in clinic book.
  * Guarantees: details are present and not null, field values are validated, immutable.
+ *
+ * TODO: Make `Person` class abstract
+ * TODO: Remove Address field and move to Patient subclass
+ * TODO: Remove Tags field from Person
+ * TODO: Simplify constructor to only require Name
+ * TODO: Remove ID management from Person - implement in Staff/Patient subclasses
+ * TODO: Implement automatic ID generation and formatting using ID_FORMAT
  */
 public class Person {
 
-    // default id for patient who has yet been assigned with an ID
+    // TODO: Move this to Staff/Patient subclasses
     private static final int DEFAULT_ID = 0;
-    // will be used later
+    // TODO: Implement ID_FORMAT usage in automatic ID assignment (e.g., P001, P002)
+    // This format will be used when generating IDs from DEFAULT_ID or similar constants
     private static final String ID_FORMAT = "P%03d";
 
-    // Identity fields
     private final Name name;
     private final Phone phone;
     private final Email email;
     private int id;
 
     // Data fields
+    // TODO: Move Address to Patient
     private final Address address;
+    // TODO: Remove Tags
     private final Set<Tag> tags = new HashSet<>();
 
 
@@ -47,17 +56,10 @@ public class Person {
     }
 
     /**
-     * constructor for Person without ID assignment
-     * ID will then be assigned by ClinicBook
+     * Constructor for Person with automatic ID assignment.
      */
     public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags) {
-        requireAllNonNull(name, phone, email, address, tags);
-        this.name = name;
-        this.phone = phone;
-        this.email = email;
-        this.address = address;
-        this.tags.addAll(tags);
-        this.id = DEFAULT_ID;
+        this(name, phone, email, address, tags, DEFAULT_ID);
     }
 
 
