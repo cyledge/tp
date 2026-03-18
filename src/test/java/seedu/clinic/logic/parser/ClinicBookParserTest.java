@@ -21,6 +21,7 @@ import seedu.clinic.logic.commands.EditCommand;
 import seedu.clinic.logic.commands.EditCommand.EditPersonDescriptor;
 import seedu.clinic.logic.commands.ExitCommand;
 import seedu.clinic.logic.commands.FindCommand;
+import seedu.clinic.logic.commands.GetHistoryCommand;
 import seedu.clinic.logic.commands.HelpCommand;
 import seedu.clinic.logic.commands.ListCommand;
 import seedu.clinic.logic.parser.exceptions.ParseException;
@@ -83,6 +84,13 @@ public class ClinicBookParserTest {
         FindCommand command = (FindCommand) parser.parseCommand(FindCommand.COMMAND_WORD + " p/98765432");
         assertEquals(new FindCommand(new PersonMatchesFindCriteriaPredicate(List.of(),
                 Optional.of(new Phone("98765432")))), command);
+    }
+
+    @Test
+    public void parseCommand_getHistory() throws Exception {
+        GetHistoryCommand command = (GetHistoryCommand) parser.parseCommand(
+                GetHistoryCommand.COMMAND_WORD + " nric/t1234567z");
+        assertEquals(new GetHistoryCommand("T1234567Z"), command);
     }
 
     @Test
