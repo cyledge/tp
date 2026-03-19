@@ -7,6 +7,7 @@ import java.util.List;
 import javafx.collections.ObservableList;
 import seedu.clinic.commons.util.ToStringBuilder;
 import seedu.clinic.model.person.Diagnosis;
+import seedu.clinic.model.person.Doctor;
 import seedu.clinic.model.person.Patient;
 import seedu.clinic.model.person.Person;
 import seedu.clinic.model.person.UniquePersonList;
@@ -17,9 +18,12 @@ import seedu.clinic.model.person.UniquePersonList;
  */
 public class ClinicBook implements ReadOnlyClinicBook {
 
-    private final UniquePersonList persons;
+    private final UniquePersonList<Person> persons;
+    private final UniquePersonList<Doctor> doctors;
     // id counter for Patient
     private int nextId = 1;
+    private int nextDoctorId = 1;
+    // id counter for Staff;
 
     /*
      * The 'unusual' code block below is a non-static initialization block, sometimes used to avoid duplication
@@ -29,7 +33,8 @@ public class ClinicBook implements ReadOnlyClinicBook {
      *   among constructors.
      */
     {
-        persons = new UniquePersonList();
+        persons = new UniquePersonList<Person>();
+        doctors = new UniquePersonList<Doctor>();
     }
 
     public ClinicBook() {}
@@ -56,12 +61,26 @@ public class ClinicBook implements ReadOnlyClinicBook {
     }
 
     /**
+     * Replaces the contents of the doctor list with {@code doctors}.
+     * {@code doctors} must not contain duplicate doctors.
+     */
+    public void setDoctors(List<Doctor> doctors) {
+        for (Doctor d : doctors) {
+            if (d.getId() == 0) {
+                d.setId(getNextDoctorId());
+            }
+        }
+        this.doctors.setPersons(doctors);
+    }
+
+    /**
      * Resets the existing data of this {@code ClinicBook} with {@code newData}.
      */
     public void resetData(ReadOnlyClinicBook newData) {
         requireNonNull(newData);
 
         setPersons(newData.getPersonList());
+        setDoctors(newData.getDoctorList());
     }
 
     //// person-level operations
@@ -75,6 +94,14 @@ public class ClinicBook implements ReadOnlyClinicBook {
     }
 
     /**
+     * Returns true if a doctor with the same identity as {@code doctor} exists in the clinic book.
+     */
+    public boolean hasDoctor(Doctor doctor) {
+        requireNonNull(doctor);
+        return doctors.contains(doctor);
+    }
+
+    /**
      * Adds a person to clinic book.
      * The person must not already exist in clinic book.
      */
@@ -82,6 +109,19 @@ public class ClinicBook implements ReadOnlyClinicBook {
         // If ID is 0 (default), assign a new one
         assignIdIfMissing(p);
         persons.add(p);
+    }
+
+    /**
+     * Adds a doctor to clinic book.
+     * The doctor must not already exist in clinic book.
+     */
+    public void addDoctor(Doctor d) {
+        // If ID is 0 (default), assign a new one
+        if (d.getId() == 0) {
+            int newId = getNextDoctorId();
+            d = new Doctor(d.getName(), d.getPhone(), d.getEmail(), newId);
+        }
+        doctors.add(d);
     }
 
     /**
@@ -94,6 +134,18 @@ public class ClinicBook implements ReadOnlyClinicBook {
                 .orElse(0);
         nextId = maxId + 1;
         return nextId++;
+    }
+
+    /**
+     * Returns the next available ID and increments the counter
+     */
+    public int getNextDoctorId() {
+        int maxId = doctors.stream()
+                .mapToInt(Person::getId)
+                .max()
+                .orElse(0);
+        nextDoctorId = maxId + 1;
+        return nextDoctorId++;
     }
 
 
@@ -116,11 +168,34 @@ public class ClinicBook implements ReadOnlyClinicBook {
     }
 
     /**
+     * Replaces the given doctor {@code target} in the list with {@code editedDoctor}.
+     * {@code target} must exist in clinic book.
+     * The doctor identity of {@code editedDoctor} must not be the same as another existing doctor in clinic book.
+     */
+    public void setDoctor(Doctor target, Doctor editedDoctor) {
+        requireNonNull(editedDoctor);
+
+        // assign new patient id if editedPerson has no id
+        if (editedDoctor.getId() == 0) {
+            editedDoctor.setId(getNextDoctorId());
+        }
+        doctors.setPerson(target, editedDoctor);
+    }
+
+    /**
      * Removes {@code key} from this {@code ClinicBook}.
      * {@code key} must exist in clinic book.
      */
     public void removePerson(Person key) {
         persons.remove(key);
+    }
+
+    /**
+     * Removes {@code key} from this {@code ClinicBook}.
+     * {@code key} must exist in clinic book.
+     */
+    public void removeDoctor(Doctor key) {
+        doctors.remove(key);
     }
 
     /**
@@ -154,12 +229,18 @@ public class ClinicBook implements ReadOnlyClinicBook {
     public String toString() {
         return new ToStringBuilder(this)
                 .add("persons", persons)
+                .add("doctors", doctors)
                 .toString();
     }
 
     @Override
     public ObservableList<Person> getPersonList() {
         return persons.asUnmodifiableObservableList();
+    }
+
+    @Override
+    public ObservableList<Doctor> getDoctorList() {
+        return doctors.asUnmodifiableObservableList();
     }
 
     @Override
@@ -174,7 +255,8 @@ public class ClinicBook implements ReadOnlyClinicBook {
         }
 
         ClinicBook otherClinicBook = (ClinicBook) other;
-        return persons.equals(otherClinicBook.persons);
+        return persons.equals(otherClinicBook.persons)
+                && doctors.equals(otherClinicBook.doctors);
     }
 
     @Override
