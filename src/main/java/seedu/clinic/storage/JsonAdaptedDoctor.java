@@ -1,5 +1,7 @@
 package seedu.clinic.storage;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -8,6 +10,7 @@ import seedu.clinic.model.person.Doctor;
 import seedu.clinic.model.person.Email;
 import seedu.clinic.model.person.Name;
 import seedu.clinic.model.person.Phone;
+import seedu.clinic.model.person.Person;
 
 /**
  * Jackson-friendly version of {@link Doctor}.
