@@ -5,7 +5,6 @@ import java.util.function.Predicate;
 
 import javafx.collections.ObservableList;
 import seedu.clinic.commons.core.GuiSettings;
-import seedu.clinic.model.person.Doctor;
 import seedu.clinic.model.person.Patient;
 import seedu.clinic.model.person.Person;
 

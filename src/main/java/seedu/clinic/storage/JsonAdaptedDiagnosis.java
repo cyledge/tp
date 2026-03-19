@@ -1,14 +1,11 @@
 package seedu.clinic.storage;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import seedu.clinic.commons.exceptions.IllegalValueException;
 // TODO: Enable after PR #52 merges
 // Currently omitted to avoid dependency on unmerged classes
 //import seedu.clinic.model.person.Diagnosis;
@@ -16,7 +13,7 @@ import seedu.clinic.commons.exceptions.IllegalValueException;
 //import seedu.clinic.model.person.Prescription;
 
 /**
- * Jackson-friendly version of {@link `Diagnosis`}.
+ * Jackson-friendly version of Diagnosis.
  */
 class JsonAdaptedDiagnosis {
 
@@ -50,9 +47,7 @@ class JsonAdaptedDiagnosis {
         }
     }
 
-    /**
-     * Converts a given {@code Diagnosis} into this class for Jackson use.
-     */
+    // Converts a given Diagnosis into this class for Jackson use.
     // TODO: Enable after PR #52 merges
     // Currently omitted to avoid dependency on unmerged classes
 //    public JsonAdaptedDiagnosis(Diagnosis source) {
@@ -67,11 +62,8 @@ class JsonAdaptedDiagnosis {
 //                .collect(Collectors.toList()));
 //    }
 
-    /**
-     * Converts this Jackson-friendly adapted diagnosis object into the model's {@code Diagnosis} object.
-     *
-     * @throws IllegalValueException if there were any data constraints violated.
-     */
+    // Converts this Jackson-friendly adapted diagnosis object into the model's Diagnosis object.
+    // Throws IllegalValueException if there were any data constraints violated.
     // TODO: Enable after PR #52 merges
     // Currently omitted to avoid dependency on unmerged classes
 //    public Diagnosis toModelType() throws IllegalValueException {

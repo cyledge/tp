@@ -1,20 +1,23 @@
 package seedu.clinic.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.clinic.logic.parser.CliSyntax.PREFIX_ADDRESS;
+import static seedu.clinic.logic.parser.CliSyntax.PREFIX_ALLERGIES;
+import static seedu.clinic.logic.parser.CliSyntax.PREFIX_DOB;
+import static seedu.clinic.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.clinic.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.clinic.logic.parser.CliSyntax.PREFIX_NRIC;
-import static seedu.clinic.logic.parser.CliSyntax.PREFIX_DOB;
-import static seedu.clinic.logic.parser.CliSyntax.PREFIX_SEX;
-import static seedu.clinic.logic.parser.CliSyntax.PREFIX_ALLERGIES;
-import static seedu.clinic.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.clinic.logic.parser.CliSyntax.PREFIX_PHONE;
-import static seedu.clinic.logic.parser.CliSyntax.PREFIX_ADDRESS;
+import static seedu.clinic.logic.parser.CliSyntax.PREFIX_SEX;
 
 import seedu.clinic.commons.util.ToStringBuilder;
 import seedu.clinic.logic.commands.exceptions.CommandException;
 import seedu.clinic.model.Model;
 import seedu.clinic.model.person.Patient;
 
+/**
+ * Adds a patient to clinic book.
+ */
 public class AddPatientCommand extends Command {
 
     public static final String COMMAND_WORD = "add-patient";

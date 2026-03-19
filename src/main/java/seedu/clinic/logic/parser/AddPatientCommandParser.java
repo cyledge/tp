@@ -1,14 +1,14 @@
 package seedu.clinic.logic.parser;
 
 import static seedu.clinic.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.clinic.logic.parser.CliSyntax.PREFIX_ADDRESS;
+import static seedu.clinic.logic.parser.CliSyntax.PREFIX_ALLERGIES;
+import static seedu.clinic.logic.parser.CliSyntax.PREFIX_DOB;
+import static seedu.clinic.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.clinic.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.clinic.logic.parser.CliSyntax.PREFIX_NRIC;
-import static seedu.clinic.logic.parser.CliSyntax.PREFIX_DOB;
-import static seedu.clinic.logic.parser.CliSyntax.PREFIX_SEX;
-import static seedu.clinic.logic.parser.CliSyntax.PREFIX_ALLERGIES;
-import static seedu.clinic.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.clinic.logic.parser.CliSyntax.PREFIX_PHONE;
-import static seedu.clinic.logic.parser.CliSyntax.PREFIX_ADDRESS;
+import static seedu.clinic.logic.parser.CliSyntax.PREFIX_SEX;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -22,12 +22,12 @@ import seedu.clinic.logic.commands.AddPatientCommand;
 import seedu.clinic.logic.parser.exceptions.ParseException;
 import seedu.clinic.model.person.Address;
 import seedu.clinic.model.person.Email;
-import seedu.clinic.model.person.Name;
 import seedu.clinic.model.person.NRIC;
-import seedu.clinic.model.person.Sex;
+import seedu.clinic.model.person.Name;
 import seedu.clinic.model.person.Patient;
 import seedu.clinic.model.person.Person;
 import seedu.clinic.model.person.Phone;
+import seedu.clinic.model.person.Sex;
 import seedu.clinic.model.tag.Tag;
 
 /**
@@ -39,6 +39,9 @@ public class AddPatientCommandParser implements Parser<AddPatientCommand> {
     private static final String MESSAGE_INVALID_DOB = "DOB must be in dd-MM-yyyy format.";
     private static final String MESSAGE_INVALID_SEX = "Sex must be one of: MALE, FEMALE, INTERSEX.";
 
+    /**
+     * Parses the given {@code String} of arguments and returns an AddPatientCommand object.
+     */
     public AddPatientCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap =
                 ArgumentTokenizer.tokenize(args,

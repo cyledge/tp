@@ -1,9 +1,8 @@
 package seedu.clinic.model;
 
 import javafx.collections.ObservableList;
-import seedu.clinic.model.person.Diagnosis;
-import seedu.clinic.model.person.Person;
 import seedu.clinic.model.person.Patient;
+import seedu.clinic.model.person.Person;
 
 /**
  * Unmodifiable view of an clinic book
