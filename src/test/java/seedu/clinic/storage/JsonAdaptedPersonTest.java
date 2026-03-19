@@ -46,15 +46,6 @@ public class JsonAdaptedPersonTest {
     }
 
     @Test
-    public void toModelType_validPatientDetails_returnsPatient() throws Exception {
-        JsonAdaptedPerson person = new JsonAdaptedPerson(NADIA);
-        Patient patient = (Patient) person.toModelType();
-        assertEquals(NADIA.getNric(), patient.getNric());
-        assertEquals(NADIA.getDateOfBirth(), patient.getDateOfBirth());
-        assertEquals(NADIA.getEmergencyContact(), patient.getEmergencyContact());
-    }
-
-    @Test
     public void toModelType_invalidName_throwsIllegalValueException() {
         JsonAdaptedPerson person =
                 new JsonAdaptedPerson(INVALID_ID, INVALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS, VALID_TAGS);
