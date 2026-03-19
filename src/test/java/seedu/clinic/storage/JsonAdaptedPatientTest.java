@@ -23,7 +23,7 @@ public class JsonAdaptedPatientTest {
     private static final String VALID_EMAIL = "alice@example.com";
     private static final String VALID_ADDRESS = "123, Jurong West Ave 6, #08-111";
     private static final List<JsonAdaptedTag> VALID_TAGS = List.of(new JsonAdaptedTag("friends"));
-    private static final String VALID_NRIC = "S1234567A";
+    private static final String VALID_NRIC = "S1166846A";
     private static final String VALID_DATE_OF_BIRTH = "2000-01-02";
     private static final String VALID_EMERGENCY_CONTACT = "Bob 98765432";
 

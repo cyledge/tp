@@ -45,7 +45,7 @@ public class JsonSerializableClinicBookTest {
         assertTrue(firstPerson instanceof Patient);
 
         Patient patient = (Patient) firstPerson;
-        assertEquals("S1234567A", patient.getNric().value);
+        assertEquals("S1166846A", patient.getNric().value);
         assertEquals("2000-01-02", patient.getDateOfBirth().toString());
         assertEquals("Bob 98765432", patient.getEmergencyContact());
         assertEquals(1, patient.getDiagnoses().size());
