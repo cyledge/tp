@@ -6,6 +6,7 @@ import static seedu.clinic.storage.JsonAdaptedPatient.MISSING_FIELD_MESSAGE_FORM
 import static seedu.clinic.testutil.Assert.assertThrows;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -14,8 +15,10 @@ import seedu.clinic.commons.exceptions.IllegalValueException;
 import seedu.clinic.model.person.Diagnosis;
 import seedu.clinic.model.person.NRIC;
 import seedu.clinic.model.person.Patient;
+import seedu.clinic.model.person.Person;
 import seedu.clinic.model.person.Sex;
 import seedu.clinic.model.tag.Tag;
+import seedu.clinic.testutil.PersonBuilder;
 
 public class JsonAdaptedPatientTest {
     private static final int VALID_ID = 1;
@@ -266,5 +269,49 @@ public class JsonAdaptedPatientTest {
                 List.of());
         Patient modelPatient = patient.toModelType();
         assertTrue(modelPatient.getTags().isEmpty());
+    }
+
+    @Test
+    public void toModelType_fromPatientSource_success() throws Exception {
+        Person person = new PersonBuilder()
+                .withId(9)
+                .withName(VALID_NAME)
+                .withPhone(VALID_PHONE)
+                .withEmail(VALID_EMAIL)
+                .withAddress(VALID_ADDRESS)
+                .withTags("friends")
+                .build();
+        Patient source = new Patient(person,
+                new NRIC(VALID_NRIC),
+                LocalDate.parse(VALID_DATE_OF_BIRTH),
+                Sex.INTERSEX);
+        source.addDiagnosis(new Diagnosis("Cold", LocalDate.of(2024, 2, 2), 4));
+
+        JsonAdaptedPatient adapted = new JsonAdaptedPatient(source);
+        Patient modelPatient = adapted.toModelType();
+
+        assertEquals(source.getId(), modelPatient.getId());
+        assertEquals(source.getName(), modelPatient.getName());
+        assertEquals(source.getNric(), modelPatient.getNric());
+        assertEquals(source.getDateOfBirth(), modelPatient.getDateOfBirth());
+        assertEquals(source.getSex(), modelPatient.getSex());
+        assertEquals(1, modelPatient.getDiagnoses().size());
+        assertEquals("Cold", modelPatient.getDiagnoses().get(0).getDescription());
+    }
+
+    @Test
+    public void toModelType_nullDiagnosisEntry_throwsNullPointerException() {
+        JsonAdaptedPatient patient = new JsonAdaptedPatient(
+                VALID_ID,
+                VALID_NAME,
+                VALID_PHONE,
+                VALID_EMAIL,
+                VALID_ADDRESS,
+                VALID_TAGS,
+                VALID_NRIC,
+                VALID_DATE_OF_BIRTH,
+                VALID_SEX,
+                                Arrays.asList((JsonAdaptedDiagnosis) null));
+        assertThrows(NullPointerException.class, patient::toModelType);
     }
 }

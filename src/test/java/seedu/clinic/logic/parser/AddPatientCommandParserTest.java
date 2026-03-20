@@ -163,8 +163,7 @@ public class AddPatientCommandParserTest {
                 + " a/123, Jurong West Ave 6, #08-111";
 
         assertThrows(ParseException.class,
-                "Sex must be one of: MALE, FEMALE, INTERSEX.",
-                () -> parser.parse(blankSex));
+            "Sex must be one of: MALE, FEMALE, INTERSEX.", () -> parser.parse(blankSex));
     }
 
     private Patient extractPatient(AddPatientCommand command) throws Exception {
