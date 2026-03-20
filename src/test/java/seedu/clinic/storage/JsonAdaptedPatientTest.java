@@ -110,4 +110,161 @@ public class JsonAdaptedPatientTest {
         String expectedMessage = String.format(MISSING_FIELD_MESSAGE_FORMAT, "sex");
         assertThrows(IllegalValueException.class, expectedMessage, patient::toModelType);
     }
+
+    @Test
+    public void toModelType_nullSex_throwsIllegalValueException() {
+        JsonAdaptedPatient patient = new JsonAdaptedPatient(
+                VALID_ID,
+                VALID_NAME,
+                VALID_PHONE,
+                VALID_EMAIL,
+                VALID_ADDRESS,
+                VALID_TAGS,
+                VALID_NRIC,
+                VALID_DATE_OF_BIRTH,
+                null,
+                List.of());
+        String expectedMessage = String.format(MISSING_FIELD_MESSAGE_FORMAT, "sex");
+        assertThrows(IllegalValueException.class, expectedMessage, patient::toModelType);
+    }
+
+    @Test
+    public void toModelType_invalidSex_throwsIllegalValueException() {
+        JsonAdaptedPatient patient = new JsonAdaptedPatient(
+                VALID_ID,
+                VALID_NAME,
+                VALID_PHONE,
+                VALID_EMAIL,
+                VALID_ADDRESS,
+                VALID_TAGS,
+                VALID_NRIC,
+                VALID_DATE_OF_BIRTH,
+                "unknown",
+                List.of());
+        assertThrows(IllegalValueException.class, "Patient's sex is invalid!", patient::toModelType);
+    }
+
+    @Test
+    public void toModelType_lowercaseSex_success() throws Exception {
+        JsonAdaptedPatient patient = new JsonAdaptedPatient(
+                VALID_ID,
+                VALID_NAME,
+                VALID_PHONE,
+                VALID_EMAIL,
+                VALID_ADDRESS,
+                VALID_TAGS,
+                VALID_NRIC,
+                VALID_DATE_OF_BIRTH,
+                "female",
+                List.of());
+        Patient modelPatient = patient.toModelType();
+        assertEquals(Sex.FEMALE, modelPatient.getSex());
+    }
+
+    @Test
+    public void toModelType_nullDateOfBirth_throwsIllegalValueException() {
+        JsonAdaptedPatient patient = new JsonAdaptedPatient(
+                VALID_ID,
+                VALID_NAME,
+                VALID_PHONE,
+                VALID_EMAIL,
+                VALID_ADDRESS,
+                VALID_TAGS,
+                VALID_NRIC,
+                null,
+                VALID_SEX,
+                List.of());
+        String expectedMessage = String.format(MISSING_FIELD_MESSAGE_FORMAT, "dateOfBirth");
+        assertThrows(IllegalValueException.class, expectedMessage, patient::toModelType);
+    }
+
+    @Test
+    public void toModelType_invalidDateOfBirth_throwsIllegalValueException() {
+        JsonAdaptedPatient patient = new JsonAdaptedPatient(
+                VALID_ID,
+                VALID_NAME,
+                VALID_PHONE,
+                VALID_EMAIL,
+                VALID_ADDRESS,
+                VALID_TAGS,
+                VALID_NRIC,
+                "2000-13-40",
+                VALID_SEX,
+                List.of());
+        assertThrows(IllegalValueException.class, "Patient's dateOfBirth is not a valid date!", patient::toModelType);
+    }
+
+    @Test
+    public void toModelType_nullDiagnoses_successWithEmptyDiagnoses() throws Exception {
+        JsonAdaptedPatient patient = new JsonAdaptedPatient(
+                VALID_ID,
+                VALID_NAME,
+                VALID_PHONE,
+                VALID_EMAIL,
+                VALID_ADDRESS,
+                VALID_TAGS,
+                VALID_NRIC,
+                VALID_DATE_OF_BIRTH,
+                VALID_SEX,
+                null);
+        Patient modelPatient = patient.toModelType();
+        assertTrue(modelPatient.getDiagnoses().isEmpty());
+    }
+
+    @Test
+    public void toModelType_sexWithSpacesAndMixedCase_success() throws Exception {
+        JsonAdaptedPatient patient = new JsonAdaptedPatient(
+                VALID_ID,
+                VALID_NAME,
+                VALID_PHONE,
+                VALID_EMAIL,
+                VALID_ADDRESS,
+                VALID_TAGS,
+                VALID_NRIC,
+                VALID_DATE_OF_BIRTH,
+                "  inTerSex  ",
+                List.of());
+        Patient modelPatient = patient.toModelType();
+        assertEquals(Sex.INTERSEX, modelPatient.getSex());
+    }
+
+    @Test
+    public void toModelType_invalidDiagnosis_throwsIllegalValueException() {
+        JsonAdaptedDiagnosis invalidDiagnosis = new JsonAdaptedDiagnosis(
+                null,
+                "2024-01-02",
+                3,
+                List.of(),
+                List.of());
+        JsonAdaptedPatient patient = new JsonAdaptedPatient(
+                VALID_ID,
+                VALID_NAME,
+                VALID_PHONE,
+                VALID_EMAIL,
+                VALID_ADDRESS,
+                VALID_TAGS,
+                VALID_NRIC,
+                VALID_DATE_OF_BIRTH,
+                VALID_SEX,
+                List.of(invalidDiagnosis));
+        String expectedMessage = String.format(JsonAdaptedDiagnosis.MISSING_FIELD_MESSAGE_FORMAT, "description");
+        assertThrows(IllegalValueException.class, expectedMessage, patient::toModelType);
+    }
+
+    @Test
+    public void toModelType_nullTags_successWithEmptyTags() throws Exception {
+        JsonAdaptedPatient patient = new JsonAdaptedPatient(
+                VALID_ID,
+                VALID_NAME,
+                VALID_PHONE,
+                VALID_EMAIL,
+                VALID_ADDRESS,
+                null,
+                VALID_NRIC,
+                VALID_DATE_OF_BIRTH,
+                VALID_SEX,
+                List.of());
+        Patient modelPatient = patient.toModelType();
+        assertTrue(modelPatient.getTags().isEmpty());
+    }
 }
