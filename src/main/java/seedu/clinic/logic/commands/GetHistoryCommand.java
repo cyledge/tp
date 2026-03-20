@@ -74,53 +74,63 @@ public class GetHistoryCommand extends Command {
 
     private String formatPatientHistory(Patient patient) {
         StringBuilder result = new StringBuilder();
-        result.append(String.format("Medical history for %s (NRIC: %s)", patient.getName(), patient.getNric().value));
+        result.append(formatPatientHeader(patient));
         result.append(System.lineSeparator());
-        result.append(String.format("Date of birth: %s", patient.getDateOfBirth()));
-        result.append(System.lineSeparator());
-        result.append(String.format("Emergency contact: %s", patient.getEmergencyContact()));
-        result.append(System.lineSeparator());
-
-        List<Diagnosis> diagnoses = patient.getDiagnoses();
-        if (diagnoses.isEmpty()) {
-            result.append("Diagnoses: none recorded.");
-            return result.toString();
-        }
-
-        result.append("Diagnoses:");
-        for (int index = 0; index < diagnoses.size(); index++) {
-            Diagnosis diagnosis = diagnoses.get(index);
-            result.append(System.lineSeparator());
-            result.append(String.format("  %d. %s (Visit date: %s, Diagnosed by ID: %d)",
-                    index + 1,
-                    diagnosis.getDescription(),
-                    diagnosis.getVisitDate(),
-                diagnosis.getDiagnosedBy()));
-
-            if (diagnosis.getSymptoms().isEmpty()) {
-                result.append(System.lineSeparator());
-                result.append("     Symptoms: none recorded.");
-            } else {
-                result.append(System.lineSeparator());
-                result.append("     Symptoms: ");
-                result.append(String.join(", ", diagnosis.getSymptoms()));
-            }
-
-            if (diagnosis.getPrescriptions().isEmpty()) {
-                result.append(System.lineSeparator());
-                result.append("     Prescriptions: none recorded.");
-            } else {
-                result.append(System.lineSeparator());
-                result.append("     Prescriptions:");
-                for (Prescription prescription : diagnosis.getPrescriptions()) {
-                    result.append(System.lineSeparator());
-                    result.append("       - ");
-                    result.append(formatPrescription(prescription));
-                }
-            }
-        }
-
+        result.append(formatDiagnosesList(patient.getDiagnoses()));
         return result.toString();
+    }
+
+    private String formatPatientHeader(Patient patient) {
+        StringBuilder header = new StringBuilder();
+        header.append(String.format("Medical history for %s (NRIC: %s)", patient.getName(), patient.getNric().value));
+        header.append(System.lineSeparator());
+        header.append(String.format("Date of birth: %s", patient.getDateOfBirth()));
+        header.append(System.lineSeparator());
+        header.append(String.format("Emergency contact: %s", patient.getEmergencyContact()));
+        return header.toString();
+    }
+
+    private String formatDiagnosesList(List<Diagnosis> diagnoses) {
+        if (diagnoses.isEmpty()) {
+            return "Diagnoses: none recorded.";
+        }
+
+        StringBuilder diagnosesSection = new StringBuilder("Diagnoses:");
+        for (int index = 0; index < diagnoses.size(); index++) {
+            diagnosesSection.append(System.lineSeparator());
+            diagnosesSection.append(formatSingleDiagnosis(index + 1, diagnoses.get(index)));
+        }
+        return diagnosesSection.toString();
+    }
+
+    private String formatSingleDiagnosis(int index, Diagnosis diagnosis) {
+        StringBuilder diag = new StringBuilder();
+        diag.append(String.format("  %d. %s (Visit date: %s, Diagnosed by ID: %d)",
+                index, diagnosis.getDescription(), diagnosis.getVisitDate(), diagnosis.getDiagnosedBy()));
+        diag.append(System.lineSeparator());
+        diag.append(formatSymptoms(diagnosis.getSymptoms()));
+        diag.append(System.lineSeparator());
+        diag.append(formatPrescriptionsSection(diagnosis.getPrescriptions()));
+        return diag.toString();
+    }
+
+    private String formatSymptoms(List<String> symptoms) {
+        if (symptoms.isEmpty()) {
+            return "     Symptoms: none recorded.";
+        }
+        return "     Symptoms: " + String.join(", ", symptoms);
+    }
+
+    private String formatPrescriptionsSection(List<Prescription> prescriptions) {
+        if (prescriptions.isEmpty()) {
+            return "     Prescriptions: none recorded.";
+        }
+
+        StringBuilder section = new StringBuilder("     Prescriptions:");
+        for (Prescription p : prescriptions) {
+            section.append(System.lineSeparator()).append("       - ").append(formatPrescription(p));
+        }
+        return section.toString();
     }
 
     private String formatPrescription(Prescription prescription) {
