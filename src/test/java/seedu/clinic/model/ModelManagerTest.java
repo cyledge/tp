@@ -25,6 +25,7 @@ import seedu.clinic.model.person.NameContainsKeywordsPredicate;
 import seedu.clinic.model.person.Patient;
 import seedu.clinic.model.person.Pharmacist;
 import seedu.clinic.model.person.Phone;
+import seedu.clinic.model.person.Sex;
 import seedu.clinic.testutil.ClinicBookBuilder;
 
 public class ModelManagerTest {
@@ -113,7 +114,7 @@ public class ModelManagerTest {
                 java.util.Set.of(),
                 new NRIC("S1166846A"),
                 java.time.LocalDate.of(2000, 1, 1),
-                "91112222",
+                Sex.FEMALE,
                 1);
         Doctor doctor = new Doctor(
                 new Name("Doctor One"),

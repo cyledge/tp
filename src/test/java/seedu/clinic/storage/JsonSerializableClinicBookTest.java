@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import seedu.clinic.commons.exceptions.IllegalValueException;
 import seedu.clinic.commons.util.JsonUtil;
 import seedu.clinic.model.ClinicBook;
+import seedu.clinic.model.person.NRIC;
 import seedu.clinic.model.person.Patient;
 import seedu.clinic.model.person.Person;
 import seedu.clinic.testutil.TypicalPersons;
@@ -48,7 +49,6 @@ public class JsonSerializableClinicBookTest {
         Patient patient = (Patient) firstPerson;
         assertEquals("S1166846A", patient.getNric().value);
         assertEquals("2000-01-02", patient.getDateOfBirth().toString());
-        assertEquals("Bob 98765432", patient.getEmergencyContact());
         assertEquals(1, patient.getDiagnoses().size());
         assertEquals("Flu", patient.getDiagnoses().get(0).getDescription());
         assertEquals(1, patient.getDiagnoses().get(0).getSymptoms().size());

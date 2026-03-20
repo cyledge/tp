@@ -131,7 +131,7 @@ public class AddCommandTest {
         public void addPatient(Patient patient) {
             throw new AssertionError("This method should not be called.");
         }
-        
+
         @Override
         public void addDoctor(Doctor doctor) {
             throw new AssertionError("This method should not be called.");

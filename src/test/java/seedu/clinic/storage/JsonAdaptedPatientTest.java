@@ -14,6 +14,7 @@ import seedu.clinic.commons.exceptions.IllegalValueException;
 import seedu.clinic.model.person.Diagnosis;
 import seedu.clinic.model.person.NRIC;
 import seedu.clinic.model.person.Patient;
+import seedu.clinic.model.person.Sex;
 import seedu.clinic.model.tag.Tag;
 
 public class JsonAdaptedPatientTest {
@@ -25,7 +26,7 @@ public class JsonAdaptedPatientTest {
     private static final List<JsonAdaptedTag> VALID_TAGS = List.of(new JsonAdaptedTag("friends"));
     private static final String VALID_NRIC = "S1166846A";
     private static final String VALID_DATE_OF_BIRTH = "2000-01-02";
-    private static final String VALID_EMERGENCY_CONTACT = "Bob 98765432";
+    private static final String VALID_SEX = Sex.FEMALE.name();
 
     @Test
     public void toModelType_validPatientDetails_returnsPatient() throws Exception {
@@ -41,7 +42,7 @@ public class JsonAdaptedPatientTest {
                 VALID_TAGS,
                 VALID_NRIC,
                 VALID_DATE_OF_BIRTH,
-                VALID_EMERGENCY_CONTACT,
+                VALID_SEX,
                 List.of(new JsonAdaptedDiagnosis(diagnosis)));
 
         Patient modelPatient = patient.toModelType();
@@ -53,7 +54,7 @@ public class JsonAdaptedPatientTest {
         assertTrue(modelPatient.getTags().contains(new Tag("friends")));
         assertEquals(VALID_NRIC, modelPatient.getNric().value);
         assertEquals(LocalDate.parse(VALID_DATE_OF_BIRTH), modelPatient.getDateOfBirth());
-        assertEquals(VALID_EMERGENCY_CONTACT, modelPatient.getEmergencyContact());
+        assertEquals(Sex.FEMALE, modelPatient.getSex());
         assertEquals(1, modelPatient.getDiagnoses().size());
         assertEquals("Flu", modelPatient.getDiagnoses().get(0).getDescription());
         assertEquals(1, modelPatient.getDiagnoses().get(0).getSymptoms().size());
@@ -71,7 +72,7 @@ public class JsonAdaptedPatientTest {
                 VALID_TAGS,
                 "INVALID",
                 VALID_DATE_OF_BIRTH,
-                VALID_EMERGENCY_CONTACT,
+                VALID_SEX,
                 List.of());
         assertThrows(IllegalValueException.class, NRIC.MESSAGE_CONSTRAINTS, patient::toModelType);
     }
@@ -87,7 +88,7 @@ public class JsonAdaptedPatientTest {
                 VALID_TAGS,
                 null,
                 VALID_DATE_OF_BIRTH,
-                VALID_EMERGENCY_CONTACT,
+                VALID_SEX,
                 List.of());
         String expectedMessage = String.format(MISSING_FIELD_MESSAGE_FORMAT, "NRIC");
         assertThrows(IllegalValueException.class, expectedMessage, patient::toModelType);

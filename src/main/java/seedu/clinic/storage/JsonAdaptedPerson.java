@@ -22,7 +22,8 @@ import seedu.clinic.model.tag.Tag;
 /**
  * Jackson-friendly version of {@link Person}.
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY,
+    property = "type", defaultImpl = JsonAdaptedPerson.class)
 @JsonSubTypes({
     @JsonSubTypes.Type(value = JsonAdaptedPerson.class, name = "person"),
     @JsonSubTypes.Type(value = JsonAdaptedPatient.class, name = "patient"),

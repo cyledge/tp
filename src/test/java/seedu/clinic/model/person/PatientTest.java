@@ -22,12 +22,12 @@ public class PatientTest {
                 Set.of(),
                 new NRIC("S1166846A"),
                 LocalDate.of(2000, 1, 1),
-                "91112222",
+                Sex.FEMALE,
                 5);
 
         assertEquals("S1166846A", patient.getNric().value);
         assertEquals(LocalDate.of(2000, 1, 1), patient.getDateOfBirth());
-        assertEquals("91112222", patient.getEmergencyContact());
+        assertEquals(Sex.FEMALE, patient.getSex());
     }
 
     @Test
@@ -41,7 +41,7 @@ public class PatientTest {
                 Set.of(),
                 new NRIC("S1166846A"),
                 dob,
-                "91112222",
+                Sex.FEMALE,
                 6);
 
         assertEquals(1, patient.getAge());
@@ -57,7 +57,7 @@ public class PatientTest {
                 Set.of(),
                 new NRIC("S1166846A"),
                 LocalDate.of(2000, 1, 1),
-                "91112222",
+                Sex.FEMALE,
                 7);
         Diagnosis diagnosis = new Diagnosis("Flu", 2);
 
@@ -78,7 +78,7 @@ public class PatientTest {
                 Set.of(),
                 new NRIC("S1166846A"),
                 LocalDate.of(2000, 1, 1),
-                "91112222",
+                Sex.FEMALE,
                 8);
         Patient second = new Patient(
                 new Name("Alice Patient"),
@@ -88,7 +88,7 @@ public class PatientTest {
                 Set.of(),
                 new NRIC("S1166846A"),
                 LocalDate.of(2000, 1, 1),
-                "91112222",
+                Sex.FEMALE,
                 8);
 
         assertTrue(first.equals(first));
@@ -108,7 +108,7 @@ public class PatientTest {
                 Set.of(),
                 10);
 
-        Patient patient = new Patient(person, new NRIC("S1166846A"), LocalDate.of(2000, 1, 1), "91112222");
+        Patient patient = new Patient(person, new NRIC("S1166846A"), LocalDate.of(2000, 1, 1), Sex.FEMALE);
         assertEquals(10, patient.getId());
     }
 }

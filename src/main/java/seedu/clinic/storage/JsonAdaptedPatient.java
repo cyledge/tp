@@ -92,14 +92,15 @@ class JsonAdaptedPatient extends JsonAdaptedPerson {
             throw new IllegalValueException("Patient's dateOfBirth is not a valid date!");
         }
 
-        if (sex == null) {
-            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, "sex"));
-        }
         final Sex modelSex;
-        try {
-            modelSex = Sex.valueOf(sex.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new IllegalValueException("Patient's sex is invalid!");
+        if (sex == null || sex.isBlank()) {
+            modelSex = Sex.FEMALE;
+        } else {
+            try {
+                modelSex = Sex.valueOf(sex.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new IllegalValueException("Patient's sex is invalid!");
+            }
         }
 
         final List<Diagnosis> modelDiagnoses = new ArrayList<>();

@@ -13,6 +13,7 @@ import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.clinic.commons.core.GuiSettings;
 import seedu.clinic.logic.commands.exceptions.CommandException;
@@ -20,9 +21,12 @@ import seedu.clinic.model.ClinicBook;
 import seedu.clinic.model.Model;
 import seedu.clinic.model.ReadOnlyClinicBook;
 import seedu.clinic.model.ReadOnlyUserPrefs;
+import seedu.clinic.model.person.Diagnosis;
+import seedu.clinic.model.person.Doctor;
 import seedu.clinic.model.person.NRIC;
 import seedu.clinic.model.person.Patient;
 import seedu.clinic.model.person.Person;
+import seedu.clinic.model.person.Pharmacist;
 import seedu.clinic.model.person.Sex;
 import seedu.clinic.testutil.PersonBuilder;
 
@@ -138,7 +142,17 @@ public class AddPatientCommandTest {
         }
 
         @Override
+        public boolean hasDoctor(Doctor doctor) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void deletePerson(Person target) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void deleteDoctor(Doctor target) {
             throw new AssertionError("This method should not be called.");
         }
 
@@ -153,7 +167,22 @@ public class AddPatientCommandTest {
         }
 
         @Override
+        public void addDoctor(Doctor doctor) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void setPerson(Person target, Person editedPerson) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void setDoctor(Doctor target, Doctor editedDoctor) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void addDiagnosis(Patient target, Diagnosis diagnosis) {
             throw new AssertionError("This method should not be called.");
         }
 
@@ -163,8 +192,28 @@ public class AddPatientCommandTest {
         }
 
         @Override
+        public ObservableList<Doctor> getFilteredDoctorList() {
+            return FXCollections.emptyObservableList();
+        }
+
+        @Override
         public void updateFilteredPersonList(Predicate<Person> predicate) {
             throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void updateFilteredDoctorList(Predicate<Doctor> predicate) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public ObservableList<Patient> getFilteredPatientList() {
+            return FXCollections.emptyObservableList();
+        }
+
+        @Override
+        public ObservableList<Pharmacist> getFilteredPharmacistList() {
+            return FXCollections.emptyObservableList();
         }
     }
 

@@ -25,6 +25,7 @@ import seedu.clinic.model.person.Patient;
 import seedu.clinic.model.person.Pharmacist;
 import seedu.clinic.model.person.Phone;
 import seedu.clinic.model.person.Prescription;
+import seedu.clinic.model.person.Sex;
 
 public class AddDiagnosisCommandTest {
 
@@ -108,7 +109,7 @@ public class AddDiagnosisCommandTest {
                 Set.of(),
                 new NRIC("S1166846A"),
                 LocalDate.of(2000, 1, 1),
-                "91112222",
+                Sex.FEMALE,
                 PATIENT_ID));
         clinicBook.addPerson(new Doctor(
                 new Name("Doctor One"),
@@ -135,7 +136,7 @@ public class AddDiagnosisCommandTest {
                 Set.of(),
                 new NRIC("S1166846A"),
                 LocalDate.of(2000, 1, 1),
-                "91112222",
+                Sex.FEMALE,
                 PATIENT_ID));
         return new ModelManager(clinicBook, new UserPrefs());
     }
@@ -150,7 +151,7 @@ public class AddDiagnosisCommandTest {
                 Set.of(),
                 new NRIC("S1166846A"),
                 LocalDate.of(2000, 1, 1),
-                "91112222",
+                Sex.FEMALE,
                 PATIENT_ID));
         clinicBook.addPerson(new Doctor(
                 new Name("Doctor One"),

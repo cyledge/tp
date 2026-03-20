@@ -30,6 +30,7 @@ import seedu.clinic.model.person.Name;
 import seedu.clinic.model.person.Patient;
 import seedu.clinic.model.person.Person;
 import seedu.clinic.model.person.Phone;
+import seedu.clinic.model.person.Sex;
 import seedu.clinic.model.person.exceptions.DuplicatePersonException;
 import seedu.clinic.testutil.PersonBuilder;
 
@@ -122,7 +123,7 @@ public class ClinicBookTest {
                 Set.of(),
                 new NRIC("S1166846A"),
                 java.time.LocalDate.of(2000, 1, 1),
-                "91112222",
+                Sex.FEMALE,
                 1);
         clinicBook.addPerson(patient);
 
