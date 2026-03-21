@@ -16,12 +16,14 @@ import seedu.clinic.model.Model;
 import seedu.clinic.model.ModelManager;
 import seedu.clinic.model.UserPrefs;
 import seedu.clinic.model.person.Address;
+import seedu.clinic.model.person.Diagnosis;
 import seedu.clinic.model.person.Email;
 import seedu.clinic.model.person.NRIC;
 import seedu.clinic.model.person.Name;
 import seedu.clinic.model.person.Patient;
 import seedu.clinic.model.person.Person;
 import seedu.clinic.model.person.Phone;
+import seedu.clinic.model.person.Prescription;
 import seedu.clinic.model.person.Sex;
 
 /**
@@ -49,7 +51,15 @@ public class GetHistoryCommandTest {
         GetHistoryCommand command = new GetHistoryCommand("S1234567D");
         command.execute(expectedModel);
 
-        String expectedMessage = String.format(GetHistoryCommand.MESSAGE_RESULT, "S1234567D", 1);
+        String lineSep = System.lineSeparator();
+        String expectedMessage = "Medical history for Alice Tan (NRIC: S1234567D)" + lineSep
+                + "Date of birth: 1990-01-01" + lineSep
+                + "Diagnoses:" + lineSep
+            + "  1. Hypertension (Visit date: 2024-05-20, Diagnosed by ID: 3)" + lineSep
+                + "     Symptoms: headache, dizziness" + lineSep
+                + "     Prescriptions:" + lineSep
+            + "       - Amlodipine, dosage: 5mg, frequency: once daily, prescribed by ID: N/A, "
+            + "dispensed by ID: 4";
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
     }
 
@@ -61,14 +71,14 @@ public class GetHistoryCommandTest {
         GetHistoryCommand command = new GetHistoryCommand("T0000000A");
         command.execute(expectedModel);
 
-        String expectedMessage = String.format(GetHistoryCommand.MESSAGE_RESULT, "T0000000A", 0);
+        String expectedMessage = String.format(GetHistoryCommand.MESSAGE_NO_PATIENT_FOUND, "T0000000A");
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
         assertEquals(Collections.emptyList(), model.getFilteredPersonList());
     }
 
     private static Model createModelWithSampleRecords() {
         ClinicBook clinicBook = new ClinicBook();
-        clinicBook.addPerson(new Patient(
+        Patient alice = new Patient(
                 new Name("Alice Tan"),
                 new Phone("91234567"),
                 new Email("alice@example.com"),
@@ -77,7 +87,15 @@ public class GetHistoryCommandTest {
                 new NRIC("S1234567D"),
                 LocalDate.of(1990, 1, 1),
                 Sex.FEMALE,
-                1));
+                1);
+
+        Diagnosis diagnosis = new Diagnosis("Hypertension", LocalDate.of(2024, 5, 20), 3);
+        diagnosis.addSymptom("headache");
+        diagnosis.addSymptom("dizziness");
+        diagnosis.addPrescription(new Prescription("Amlodipine", "5mg", "once daily", 4));
+        alice.addDiagnosis(diagnosis);
+
+        clinicBook.addPerson(alice);
         clinicBook.addPerson(new Patient(
                 new Name("Bob Lee"),
                 new Phone("92345678"),
