@@ -26,7 +26,7 @@ public class DoctorTest {
                 Set.of(),
                 new NRIC("S1166846A"),
                 LocalDate.of(2000, 1, 1),
-                "91112222",
+                Sex.FEMALE,
                 2);
         Diagnosis diagnosis = new Diagnosis("Flu", 1);
         Prescription prescription = new Prescription("Paracetamol", "500mg", "daily", 3);

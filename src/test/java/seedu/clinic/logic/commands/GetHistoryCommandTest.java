@@ -24,6 +24,7 @@ import seedu.clinic.model.person.Patient;
 import seedu.clinic.model.person.Person;
 import seedu.clinic.model.person.Phone;
 import seedu.clinic.model.person.Prescription;
+import seedu.clinic.model.person.Sex;
 
 /**
  * Contains integration tests (interaction with the Model) for {@code GetHistoryCommand}.
@@ -53,7 +54,6 @@ public class GetHistoryCommandTest {
         String lineSep = System.lineSeparator();
         String expectedMessage = "Medical history for Alice Tan (NRIC: S1234567D)" + lineSep
                 + "Date of birth: 1990-01-01" + lineSep
-                + "Emergency contact: 91230000" + lineSep
                 + "Diagnoses:" + lineSep
             + "  1. Hypertension (Visit date: 2024-05-20, Diagnosed by ID: 3)" + lineSep
                 + "     Symptoms: headache, dizziness" + lineSep
@@ -86,8 +86,8 @@ public class GetHistoryCommandTest {
                 Set.of(),
                 new NRIC("S1234567D"),
                 LocalDate.of(1990, 1, 1),
-            "91230000",
-            1);
+                Sex.FEMALE,
+                1);
 
         Diagnosis diagnosis = new Diagnosis("Hypertension", LocalDate.of(2024, 5, 20), 3);
         diagnosis.addSymptom("headache");
@@ -104,8 +104,8 @@ public class GetHistoryCommandTest {
                 Set.of(),
                 new NRIC("T1234567J"),
                 LocalDate.of(1988, 6, 15),
-            "92340000",
-            2));
+                Sex.MALE,
+                2));
         clinicBook.addPerson(new Person(
                 new Name("Carl Helper"),
                 new Phone("93456789"),

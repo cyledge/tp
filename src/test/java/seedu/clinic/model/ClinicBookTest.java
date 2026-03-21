@@ -31,6 +31,7 @@ import seedu.clinic.model.person.Patient;
 import seedu.clinic.model.person.Person;
 import seedu.clinic.model.person.Pharmacist;
 import seedu.clinic.model.person.Phone;
+import seedu.clinic.model.person.Sex;
 import seedu.clinic.model.person.exceptions.DuplicatePersonException;
 import seedu.clinic.testutil.PersonBuilder;
 
@@ -41,6 +42,7 @@ public class ClinicBookTest {
     @Test
     public void constructor() {
         assertEquals(Collections.emptyList(), clinicBook.getPersonList());
+        assertEquals(Collections.emptyList(), clinicBook.getPatientList());
         assertEquals(Collections.emptyList(), clinicBook.getDoctorList());
         assertEquals(Collections.emptyList(), clinicBook.getPharmacistList());
     }
@@ -110,7 +112,9 @@ public class ClinicBookTest {
     @Test
     public void toStringMethod() {
         String expected = ClinicBook.class.getCanonicalName() + "{persons=" + clinicBook.getPersonList()
-                + ", doctors=" + clinicBook.getDoctorList() + ", pharmacists=" + clinicBook.getPharmacistList() + "}";
+                + ", patients=" + clinicBook.getPatientList()
+                + ", doctors=" + clinicBook.getDoctorList()
+                + ", pharmacists=" + clinicBook.getPharmacistList() + "}";
         assertEquals(expected, clinicBook.toString());
     }
 
@@ -124,14 +128,14 @@ public class ClinicBookTest {
                 Set.of(),
                 new NRIC("S1166846A"),
                 java.time.LocalDate.of(2000, 1, 1),
-                "91112222",
+                Sex.FEMALE,
                 1);
-        clinicBook.addPerson(patient);
+        clinicBook.addPatient(patient);
 
         Diagnosis diagnosis = new Diagnosis("Flu", 2);
         clinicBook.addDiagnosis(patient, diagnosis);
 
-        Patient updated = (Patient) clinicBook.getPersonList().get(0);
+        Patient updated = clinicBook.getPatientList().get(0);
         assertEquals(1, updated.getDiagnoses().size());
     }
 
@@ -140,11 +144,13 @@ public class ClinicBookTest {
      */
     private static class ClinicBookStub implements ReadOnlyClinicBook {
         private final ObservableList<Person> persons = FXCollections.observableArrayList();
+        private final ObservableList<Patient> patients = FXCollections.observableArrayList();
         private final ObservableList<Doctor> doctors = FXCollections.observableArrayList();
         private final ObservableList<Pharmacist> pharmacists = FXCollections.observableArrayList();
 
         ClinicBookStub(Collection<Person> persons) {
             this.persons.setAll(persons);
+            this.patients.setAll(patients);
             this.doctors.setAll(doctors);
             this.pharmacists.setAll(pharmacists);
         }
@@ -152,6 +158,11 @@ public class ClinicBookTest {
         @Override
         public ObservableList<Person> getPersonList() {
             return persons;
+        }
+
+        @Override
+        public ObservableList<Patient> getPatientList() {
+            return FXCollections.emptyObservableList();
         }
 
         @Override

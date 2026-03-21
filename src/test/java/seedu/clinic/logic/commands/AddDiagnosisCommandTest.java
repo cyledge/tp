@@ -25,6 +25,7 @@ import seedu.clinic.model.person.Patient;
 import seedu.clinic.model.person.Pharmacist;
 import seedu.clinic.model.person.Phone;
 import seedu.clinic.model.person.Prescription;
+import seedu.clinic.model.person.Sex;
 
 public class AddDiagnosisCommandTest {
 
@@ -76,9 +77,7 @@ public class AddDiagnosisCommandTest {
         AddDiagnosisCommand command = new AddDiagnosisCommand(Index.fromOneBased(PATIENT_ID), diagnosis);
 
         CommandException exception = assertThrows(CommandException.class, () -> command.execute(model));
-        // TODO: manual change to pass test
-        //assertEquals(AddDiagnosisCommand.MESSAGE_INVALID_PHARMACIST, exception.getMessage());
-        assertEquals(AddDiagnosisCommand.MESSAGE_INVALID_DOCTOR, exception.getMessage());
+        assertEquals(AddDiagnosisCommand.MESSAGE_INVALID_PHARMACIST, exception.getMessage());
     }
 
     @Test
@@ -100,7 +99,7 @@ public class AddDiagnosisCommandTest {
 
     private static Model createModelWithAllRoles() {
         ClinicBook clinicBook = new ClinicBook();
-        clinicBook.addPerson(new Patient(
+        clinicBook.addPatient(new Patient(
                 new Name("Patient One"),
                 new Phone("91234567"),
                 new Email("patient@example.com"),
@@ -108,9 +107,9 @@ public class AddDiagnosisCommandTest {
                 Set.of(),
                 new NRIC("S1166846A"),
                 LocalDate.of(2000, 1, 1),
-                "91112222",
+                Sex.FEMALE,
                 PATIENT_ID));
-        clinicBook.addPerson(new Doctor(
+        clinicBook.addDoctor(new Doctor(
                 new Name("Doctor One"),
                 new Phone("92345678"),
                 new Email("doctor@example.com"),
@@ -125,7 +124,7 @@ public class AddDiagnosisCommandTest {
 
     private static Model createModelWithPatientOnly() {
         ClinicBook clinicBook = new ClinicBook();
-        clinicBook.addPerson(new Patient(
+        clinicBook.addPatient(new Patient(
                 new Name("Patient One"),
                 new Phone("91234567"),
                 new Email("patient@example.com"),
@@ -133,14 +132,14 @@ public class AddDiagnosisCommandTest {
                 Set.of(),
                 new NRIC("S1166846A"),
                 LocalDate.of(2000, 1, 1),
-                "91112222",
+                Sex.FEMALE,
                 PATIENT_ID));
         return new ModelManager(clinicBook, new UserPrefs());
     }
 
     private static Model createModelWithPatientAndDoctor() {
         ClinicBook clinicBook = new ClinicBook();
-        clinicBook.addPerson(new Patient(
+        clinicBook.addPatient(new Patient(
                 new Name("Patient One"),
                 new Phone("91234567"),
                 new Email("patient@example.com"),
@@ -148,9 +147,9 @@ public class AddDiagnosisCommandTest {
                 Set.of(),
                 new NRIC("S1166846A"),
                 LocalDate.of(2000, 1, 1),
-                "91112222",
+                Sex.FEMALE,
                 PATIENT_ID));
-        clinicBook.addPerson(new Doctor(
+        clinicBook.addDoctor(new Doctor(
                 new Name("Doctor One"),
                 new Phone("92345678"),
                 new Email("doctor@example.com"),

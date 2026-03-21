@@ -12,8 +12,10 @@ import org.junit.jupiter.api.Test;
 import seedu.clinic.commons.exceptions.IllegalValueException;
 import seedu.clinic.commons.util.JsonUtil;
 import seedu.clinic.model.ClinicBook;
+import seedu.clinic.model.person.NRIC;
 import seedu.clinic.model.person.Patient;
 import seedu.clinic.model.person.Person;
+import seedu.clinic.model.person.Sex;
 import seedu.clinic.testutil.TypicalPersons;
 
 public class JsonSerializableClinicBookTest {
@@ -48,7 +50,7 @@ public class JsonSerializableClinicBookTest {
         Patient patient = (Patient) firstPerson;
         assertEquals("S1166846A", patient.getNric().value);
         assertEquals("2000-01-02", patient.getDateOfBirth().toString());
-        assertEquals("Bob 98765432", patient.getEmergencyContact());
+        assertEquals(Sex.FEMALE, patient.getSex());
         assertEquals(1, patient.getDiagnoses().size());
         assertEquals("Flu", patient.getDiagnoses().get(0).getDescription());
         assertEquals(1, patient.getDiagnoses().get(0).getSymptoms().size());
@@ -60,6 +62,19 @@ public class JsonSerializableClinicBookTest {
         JsonSerializableClinicBook dataFromFile = JsonUtil.readJsonFile(INVALID_PERSON_FILE,
                 JsonSerializableClinicBook.class).get();
         assertThrows(IllegalValueException.class, dataFromFile::toModelType);
+    }
+
+    @Test
+    public void toModelType_typicalPatientsFile_success() throws Exception {
+        JsonSerializableClinicBook dataFromFile = JsonUtil.readJsonFile(TYPICAL_PATIENTS_FILE,
+                JsonSerializableClinicBook.class).get();
+        ClinicBook clinicBookFromFile = dataFromFile.toModelType();
+        Person patientPerson = clinicBookFromFile.getPersonList().get(1);
+        assertTrue(patientPerson instanceof Patient);
+        Patient patient = (Patient) patientPerson;
+        assertEquals("Nadia Tan", patient.getName().fullName);
+        assertEquals(new NRIC("S1234567D"), patient.getNric());
+        assertEquals(Sex.FEMALE, patient.getSex());
     }
 
     @Test

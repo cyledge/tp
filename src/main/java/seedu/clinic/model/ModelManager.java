@@ -6,9 +6,7 @@ import static seedu.clinic.commons.util.CollectionUtil.requireAllNonNull;
 import java.nio.file.Path;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import seedu.clinic.commons.core.GuiSettings;
@@ -28,6 +26,7 @@ public class ModelManager implements Model {
     private final ClinicBook clinicBook;
     private final UserPrefs userPrefs;
     private final FilteredList<Person> filteredPersons;
+    private final FilteredList<Patient> filteredPatients;
     private final FilteredList<Doctor> filteredDoctors;
     private final FilteredList<Pharmacist> filteredPharmacists;
 
@@ -42,6 +41,7 @@ public class ModelManager implements Model {
         this.clinicBook = new ClinicBook(clinicBook);
         this.userPrefs = new UserPrefs(userPrefs);
         filteredPersons = new FilteredList<Person>(this.clinicBook.getPersonList());
+        filteredPatients = new FilteredList<Patient>(this.clinicBook.getPatientList());
         filteredDoctors = new FilteredList<Doctor>(this.clinicBook.getDoctorList());
         filteredPharmacists = new FilteredList<Pharmacist>(this.clinicBook.getPharmacistList());
     }
@@ -104,6 +104,12 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public boolean hasPatient(Patient patient) {
+        requireNonNull(patient);
+        return clinicBook.hasPatient(patient);
+    }
+
+    @Override
     public boolean hasDoctor(Doctor doctor) {
         requireNonNull(doctor);
         return clinicBook.hasDoctor(doctor);
@@ -118,6 +124,11 @@ public class ModelManager implements Model {
     @Override
     public void deletePerson(Person target) {
         clinicBook.removePerson(target);
+    }
+
+    @Override
+    public void deletePatient(Patient target) {
+        clinicBook.removePatient(target);
     }
 
     @Override
@@ -137,6 +148,12 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public void addPatient(Patient patient) {
+        clinicBook.addPatient(patient);
+        updateFilteredPatientList(PREDICATE_SHOW_ALL_PATIENTS);
+    }
+
+    @Override
     public void addDoctor(Doctor doctor) {
         clinicBook.addDoctor(doctor);
         updateFilteredDoctorList(PREDICATE_SHOW_ALL_DOCTORS);
@@ -148,12 +165,18 @@ public class ModelManager implements Model {
         updateFilteredPharmacistList(PREDICATE_SHOW_ALL_PHARMACISTS);
     }
 
-
     @Override
     public void setPerson(Person target, Person editedPerson) {
         requireAllNonNull(target, editedPerson);
 
         clinicBook.setPerson(target, editedPerson);
+    }
+
+    @Override
+    public void setPatient(Patient target, Patient editedPatient) {
+        requireAllNonNull(target, editedPatient);
+
+        clinicBook.setPatient(target, editedPatient);
     }
 
     @Override
@@ -186,6 +209,11 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public ObservableList<Patient> getFilteredPatientList() {
+        return filteredPatients;
+    }
+
+    @Override
     public ObservableList<Doctor> getFilteredDoctorList() {
         return filteredDoctors;
     }
@@ -202,9 +230,9 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public void updateFilteredDoctorList(Predicate<Doctor> predicate) {
+    public void updateFilteredPatientList(Predicate<Patient> predicate) {
         requireNonNull(predicate);
-        filteredDoctors.setPredicate(predicate);
+        filteredPatients.setPredicate(predicate);
     }
 
     @Override
@@ -213,12 +241,10 @@ public class ModelManager implements Model {
         filteredPharmacists.setPredicate(predicate);
     }
 
-    public ObservableList<Patient> getFilteredPatientList() {
-        filteredPersons.setPredicate(null);
-        return filteredPersons.filtered(p -> p instanceof Patient)
-                .stream()
-                .map(p -> (Patient) p)
-                .collect(Collectors.toCollection(FXCollections::observableArrayList));
+    @Override
+    public void updateFilteredDoctorList(Predicate<Doctor> predicate) {
+        requireNonNull(predicate);
+        filteredDoctors.setPredicate(predicate);
     }
 
     @Override

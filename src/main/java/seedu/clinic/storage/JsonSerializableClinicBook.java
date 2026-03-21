@@ -23,10 +23,12 @@ import seedu.clinic.model.person.Pharmacist;
 class JsonSerializableClinicBook {
 
     public static final String MESSAGE_DUPLICATE_PERSON = "Persons list contains duplicate person(s).";
+    public static final String MESSAGE_DUPLICATE_PATIENT = "Doctors list contains duplicate patient(s).";
     public static final String MESSAGE_DUPLICATE_DOCTOR = "Doctors list contains duplicate doctor(s).";
     public static final String MESSAGE_DUPLICATE_PHARMACIST = "Pharmacists list contains duplicate pharmacist(s).";
 
     private final List<JsonAdaptedPerson> persons = new ArrayList<>();
+    private final List<JsonAdaptedPatient> patients = new ArrayList<>();
     private final List<JsonAdaptedDoctor> doctors = new ArrayList<>();
     private final List<JsonAdaptedPharmacist> pharmacists = new ArrayList<>();
 
@@ -35,9 +37,11 @@ class JsonSerializableClinicBook {
      */
     @JsonCreator
     public JsonSerializableClinicBook(@JsonProperty("persons") List<JsonAdaptedPerson> persons,
+                                      @JsonProperty("patients") List<JsonAdaptedPatient> patients,
                                       @JsonProperty("doctors") List<JsonAdaptedDoctor> doctors,
                                       @JsonProperty("pharmacists") List<JsonAdaptedPharmacist> pharmacists) {
         this.persons.addAll(persons);
+        this.patients.addAll(patients);
         this.doctors.addAll(doctors);
         this.pharmacists.addAll(pharmacists);
     }
@@ -48,6 +52,7 @@ class JsonSerializableClinicBook {
      * @param source future changes to this will not affect the created {@code JsonSerializableClinicBook}.
      */
     public JsonSerializableClinicBook(ReadOnlyClinicBook source) {
+        patients.addAll(source.getPatientList().stream().map(JsonAdaptedPatient::new).collect(Collectors.toList()));
         doctors.addAll(source.getDoctorList().stream().map(JsonAdaptedDoctor::new).collect(Collectors.toList()));
         pharmacists.addAll(source.getPharmacistList().stream()
             .map(JsonAdaptedPharmacist::new)
@@ -81,6 +86,14 @@ class JsonSerializableClinicBook {
                 throw new IllegalValueException(MESSAGE_DUPLICATE_PERSON);
             }
             clinicBook.addPerson(person);
+        }
+
+        for (JsonAdaptedPatient jsonAdaptedPatient : patients) {
+            Patient patient = jsonAdaptedPatient.toModelType();
+            if (clinicBook.hasPatient(patient)) {
+                throw new IllegalValueException(MESSAGE_DUPLICATE_DOCTOR);
+            }
+            clinicBook.addPatient(patient);
         }
 
         for (JsonAdaptedDoctor jsonAdaptedDoctor : doctors) {

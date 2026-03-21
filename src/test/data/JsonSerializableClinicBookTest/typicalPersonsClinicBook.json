@@ -57,6 +57,7 @@
     "address" : "4th street",
     "tags" : [ ]
   } ],
+  "patients": [],
   "doctors": [],
   "pharmacists": []
 }

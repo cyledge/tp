@@ -3,6 +3,7 @@ package seedu.clinic.model.person;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
@@ -19,15 +20,14 @@ public class PatientTest {
                 new Phone("91234567"),
                 new Email("alice@example.com"),
                 new Address("1 Street"),
-                Set.of(),
                 new NRIC("S1166846A"),
                 LocalDate.of(2000, 1, 1),
-                "91112222",
+                Sex.FEMALE,
                 5);
 
         assertEquals("S1166846A", patient.getNric().value);
         assertEquals(LocalDate.of(2000, 1, 1), patient.getDateOfBirth());
-        assertEquals("91112222", patient.getEmergencyContact());
+        assertEquals(Sex.FEMALE, patient.getSex());
     }
 
     @Test
@@ -38,10 +38,9 @@ public class PatientTest {
                 new Phone("91234567"),
                 new Email("alice@example.com"),
                 new Address("1 Street"),
-                Set.of(),
                 new NRIC("S1166846A"),
                 dob,
-                "91112222",
+                Sex.FEMALE,
                 6);
 
         assertEquals(1, patient.getAge());
@@ -54,10 +53,9 @@ public class PatientTest {
                 new Phone("91234567"),
                 new Email("alice@example.com"),
                 new Address("1 Street"),
-                Set.of(),
                 new NRIC("S1166846A"),
                 LocalDate.of(2000, 1, 1),
-                "91112222",
+                Sex.FEMALE,
                 7);
         Diagnosis diagnosis = new Diagnosis("Flu", 2);
 
@@ -75,20 +73,18 @@ public class PatientTest {
                 new Phone("91234567"),
                 new Email("alice@example.com"),
                 new Address("1 Street"),
-                Set.of(),
                 new NRIC("S1166846A"),
                 LocalDate.of(2000, 1, 1),
-                "91112222",
+                Sex.FEMALE,
                 8);
         Patient second = new Patient(
                 new Name("Alice Patient"),
                 new Phone("91234567"),
                 new Email("alice@example.com"),
                 new Address("1 Street"),
-                Set.of(),
                 new NRIC("S1166846A"),
                 LocalDate.of(2000, 1, 1),
-                "91112222",
+                Sex.FEMALE,
                 8);
 
         assertTrue(first.equals(first));
@@ -108,7 +104,66 @@ public class PatientTest {
                 Set.of(),
                 10);
 
-        Patient patient = new Patient(person, new NRIC("S1166846A"), LocalDate.of(2000, 1, 1), "91112222");
+        Patient patient = new Patient(person, new NRIC("S1166846A"), LocalDate.of(2000, 1, 1), Sex.FEMALE);
         assertEquals(10, patient.getId());
+    }
+
+    @Test
+    public void constructor_withoutExplicitId_assignsPatientId() {
+        Patient patient = new Patient(
+                new Name("Auto Id"),
+                new Phone("90001234"),
+                new Email("auto@example.com"),
+                new Address("2 Street"),
+                new NRIC("S1166846A"),
+                LocalDate.of(2001, 2, 3),
+                Sex.MALE);
+
+        assertTrue(patient.getPatientId() > 0);
+    }
+
+    @Test
+    public void addDiagnosis_null_throwsNullPointerException() {
+        Patient patient = new Patient(
+                new Name("Alice Patient"),
+                new Phone("91234567"),
+                new Email("alice@example.com"),
+                new Address("1 Street"),
+                new NRIC("S1166846A"),
+                LocalDate.of(2000, 1, 1),
+                Sex.FEMALE,
+                11);
+
+        assertThrows(NullPointerException.class, () -> patient.addDiagnosis(null));
+    }
+
+    @Test
+    public void removeDiagnosis_null_throwsNullPointerException() {
+        Patient patient = new Patient(
+                new Name("Alice Patient"),
+                new Phone("91234567"),
+                new Email("alice@example.com"),
+                new Address("1 Street"),
+                new NRIC("S1166846A"),
+                LocalDate.of(2000, 1, 1),
+                Sex.FEMALE,
+                12);
+
+        assertThrows(NullPointerException.class, () -> patient.removeDiagnosis(null));
+    }
+
+    @Test
+    public void getDiagnoses_modifyReturnedList_throwsUnsupportedOperationException() {
+        Patient patient = new Patient(
+                new Name("Alice Patient"),
+                new Phone("91234567"),
+                new Email("alice@example.com"),
+                new Address("1 Street"),
+                new NRIC("S1166846A"),
+                LocalDate.of(2000, 1, 1),
+                Sex.FEMALE,
+                13);
+
+        assertThrows(UnsupportedOperationException.class, () -> patient.getDiagnoses().add(new Diagnosis("Flu", 2)));
     }
 }

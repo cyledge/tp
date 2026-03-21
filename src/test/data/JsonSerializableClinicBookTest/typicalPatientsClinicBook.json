@@ -13,12 +13,13 @@
     "id" : 2,
     "nric" : "S1234567D",
     "dateOfBirth" : "1992-04-12",
-    "emergencyContact" : "Amir Tan",
+    "sex" : "FEMALE",
     "phone" : "93456789",
     "email" : "nadiatan@example.com",
     "address" : "Blk 10 Bedok North Ave 2, #03-12",
     "tags" : [ "patient" ]
   } ],
+  "patients": [],
   "doctors": [],
   "pharmacists": []
 }

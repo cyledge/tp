@@ -20,10 +20,12 @@ import seedu.clinic.model.person.UniquePersonList;
 public class ClinicBook implements ReadOnlyClinicBook {
 
     private final UniquePersonList<Person> persons;
+    private final UniquePersonList<Patient> patients;
     private final UniquePersonList<Pharmacist> pharmacists;
     private final UniquePersonList<Doctor> doctors;
     // id counter for Patient
     private int nextId = 1;
+    private int nextPatientId = 1;
     private int nextStaffId = 1;
     // id counter for Staff;
 
@@ -36,6 +38,7 @@ public class ClinicBook implements ReadOnlyClinicBook {
      */
     {
         persons = new UniquePersonList<Person>();
+        patients = new UniquePersonList<Patient>();
         pharmacists = new UniquePersonList<Pharmacist>();
         doctors = new UniquePersonList<Doctor>();
     }
@@ -61,6 +64,18 @@ public class ClinicBook implements ReadOnlyClinicBook {
             assignIdIfMissing(p);
         }
         this.persons.setPersons(persons);
+    }
+
+    /**
+     * Replaces the contents of the patient list with {@code patients}.
+     */
+    public void setPatients(List<Patient> patients) {
+        for (Patient p : patients) {
+            if (p.getId() == 0) {
+                p.setId(getNextPatientId());
+            }
+        }
+        this.patients.setPersons(patients);
     }
 
     /**
@@ -96,6 +111,7 @@ public class ClinicBook implements ReadOnlyClinicBook {
         requireNonNull(newData);
 
         setPersons(newData.getPersonList());
+        setPatients(newData.getPatientList());
         setPharmacists(newData.getPharmacistList());
         setDoctors(newData.getDoctorList());
     }
@@ -108,6 +124,14 @@ public class ClinicBook implements ReadOnlyClinicBook {
     public boolean hasPerson(Person person) {
         requireNonNull(person);
         return persons.contains(person);
+    }
+
+    /**
+     * Returns true if a patient with the same identity as {@code patient} exists in the clinic book.
+     */
+    public boolean hasPatient(Patient patient) {
+        requireNonNull(patient);
+        return patients.contains(patient);
     }
 
     /**
@@ -137,14 +161,25 @@ public class ClinicBook implements ReadOnlyClinicBook {
     }
 
     /**
+     * Adds a Patient to clinic book.
+     * The patient must not already exist in clinic book.
+     */
+    public void addPatient(Patient p) {
+        requireNonNull(p);
+        if (p.getId() == 0) {
+            p.setId(getNextPatientId());
+        }
+        patients.add(p);
+    }
+
+    /**
      * Adds a doctor to clinic book.
      * The doctor must not already exist in clinic book.
      */
     public void addDoctor(Doctor d) {
         // If ID is 0 (default), assign a new one
         if (d.getId() == 0) {
-            int newId = getNextStaffId();
-            d = new Doctor(d.getName(), d.getPhone(), d.getEmail(), newId);
+            d.setId(getNextStaffId());
         }
         doctors.add(d);
     }
@@ -174,7 +209,19 @@ public class ClinicBook implements ReadOnlyClinicBook {
     }
 
     /**
-     * Returns the next available ID and increments the counter
+     * Returns the next available patient ID and increments the counter
+     */
+    public int getNextPatientId() {
+        int maxId = patients.stream()
+                .mapToInt(Person::getId)
+                .max()
+                .orElse(0);
+        nextPatientId = maxId + 1;
+        return nextPatientId++;
+    }
+
+    /**
+     * Returns the next available Doctor ID and increments the counter
      */
     public int getNextStaffId() {
         int currentStaffCount = (int) (doctors.stream().count() + pharmacists.stream().count());
@@ -183,7 +230,6 @@ public class ClinicBook implements ReadOnlyClinicBook {
         }
         return nextStaffId++;
     }
-
 
     /**
      * Replaces the given person {@code target} in the list with {@code editedPerson}.
@@ -201,6 +247,18 @@ public class ClinicBook implements ReadOnlyClinicBook {
         if (person.getId() == 0) {
             person.setId(getNextId());
         }
+    }
+
+    /**
+     * Replaces the given patient {@code target} in the list with {@code editedPatient}.
+     * {@code target} must exist in clinic book.
+     * The person identity of {@code editedPatient} must not be the same as another existing patient in clinic book.
+     */
+    public void setPatient(Patient target, Patient editedPatient) {
+        requireNonNull(editedPatient);
+
+        assignIdIfMissing(editedPatient);
+        patients.setPerson(target, editedPatient);
     }
 
     /**
@@ -246,6 +304,14 @@ public class ClinicBook implements ReadOnlyClinicBook {
      * Removes {@code key} from this {@code ClinicBook}.
      * {@code key} must exist in clinic book.
      */
+    public void removePatient(Patient key) {
+        patients.remove(key);
+    }
+
+    /**
+     * Removes {@code key} from this {@code ClinicBook}.
+     * {@code key} must exist in clinic book.
+     */
     public void removeDoctor(Doctor key) {
         doctors.remove(key);
     }
@@ -265,14 +331,21 @@ public class ClinicBook implements ReadOnlyClinicBook {
         requireNonNull(target);
         requireNonNull(diagnosis);
 
-        Patient editedPatient = new Patient(target.getName(), target.getPhone(), target.getEmail(),
-            target.getAddress(), target.getTags(), target.getNric(), target.getDateOfBirth(),
-            target.getEmergencyContact(), target.getId());
+        Patient editedPatient = new Patient(
+            target.getName(),
+            target.getPhone(),
+            target.getEmail(),
+            target.getAddress(),
+            target.getTags(),
+            target.getNric(),
+            target.getDateOfBirth(),
+            target.getSex(),
+            target.getId());
 
         target.getDiagnoses().forEach(editedPatient::addDiagnosis);
         editedPatient.addDiagnosis(diagnosis);
 
-        persons.setPerson(target, editedPatient);
+        patients.setPerson(target, editedPatient);
     }
 
     //// util methods
@@ -281,6 +354,7 @@ public class ClinicBook implements ReadOnlyClinicBook {
     public String toString() {
         return new ToStringBuilder(this)
                 .add("persons", persons)
+                .add("patients", patients)
                 .add("doctors", doctors)
                 .add("pharmacists", pharmacists)
                 .toString();
@@ -289,6 +363,11 @@ public class ClinicBook implements ReadOnlyClinicBook {
     @Override
     public ObservableList<Person> getPersonList() {
         return persons.asUnmodifiableObservableList();
+    }
+
+    @Override
+    public ObservableList<Patient> getPatientList() {
+        return patients.asUnmodifiableObservableList();
     }
 
     @Override
@@ -314,6 +393,7 @@ public class ClinicBook implements ReadOnlyClinicBook {
 
         ClinicBook otherClinicBook = (ClinicBook) other;
         return persons.equals(otherClinicBook.persons)
+                && patients.equals(otherClinicBook.patients)
                 && doctors.equals(otherClinicBook.doctors)
                 && pharmacists.equals(otherClinicBook.pharmacists);
     }
