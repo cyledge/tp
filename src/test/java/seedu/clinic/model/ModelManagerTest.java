@@ -139,11 +139,12 @@ public class ModelManagerTest {
         modelManager.addDiagnosis(patient, diagnosis);
 
         assertEquals(3, modelManager.getFilteredPersonList().size());
-        Patient updated = (Patient) modelManager.getFilteredPersonList().stream()
+        Patient updatedPatient = modelManager.getFilteredPersonList().stream()
                 .filter(Patient.class::isInstance)
+                .map(Patient.class::cast)
                 .findFirst()
                 .orElseThrow();
-        assertEquals(1, updated.getDiagnoses().size());
+        assertEquals(1, updatedPatient.getDiagnoses().size());
     }
 
     @Test

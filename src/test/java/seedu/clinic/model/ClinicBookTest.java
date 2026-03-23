@@ -157,8 +157,8 @@ public class ClinicBookTest {
         Diagnosis diagnosis = new Diagnosis("Flu", 2);
         clinicBook.addDiagnosis(patient, diagnosis);
 
-        Patient updated = (Patient) clinicBook.getPersonList().get(0);
-        assertEquals(1, updated.getDiagnoses().size());
+        Patient updatedPatient = (Patient) clinicBook.getPersonList().get(0);
+        assertEquals(1, updatedPatient.getDiagnoses().size());
     }
 
     /**
