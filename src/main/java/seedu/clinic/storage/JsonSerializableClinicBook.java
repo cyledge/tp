@@ -11,6 +11,9 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 import seedu.clinic.commons.exceptions.IllegalValueException;
 import seedu.clinic.model.ClinicBook;
 import seedu.clinic.model.ReadOnlyClinicBook;
+import seedu.clinic.model.person.Doctor;
+import seedu.clinic.model.person.Patient;
+import seedu.clinic.model.person.Pharmacist;
 import seedu.clinic.model.person.Person;
 
 /**
@@ -41,14 +44,14 @@ class JsonSerializableClinicBook {
     public JsonSerializableClinicBook(ReadOnlyClinicBook source) {
         persons.addAll(source.getPersonList().stream()
                 .map(person -> {
-                    if (person instanceof seedu.clinic.model.person.Patient) {
-                        return new JsonAdaptedPatient((seedu.clinic.model.person.Patient) person);
+                    if (person instanceof Patient patient) {
+                        return new JsonAdaptedPatient(patient);
                     }
-                    if (person instanceof seedu.clinic.model.person.Doctor) {
-                        return new JsonAdaptedDoctor((seedu.clinic.model.person.Doctor) person);
+                    if (person instanceof Doctor doctor) {
+                        return new JsonAdaptedDoctor(doctor);
                     }
-                    if (person instanceof seedu.clinic.model.person.Pharmacist) {
-                        return new JsonAdaptedPharmacist((seedu.clinic.model.person.Pharmacist) person);
+                    if (person instanceof Pharmacist pharmacist) {
+                        return new JsonAdaptedPharmacist(pharmacist);
                     }
                     return new JsonAdaptedPerson(person);
                 })

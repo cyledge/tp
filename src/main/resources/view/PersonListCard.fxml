@@ -27,7 +27,7 @@
         </Label>
         <Label fx:id="role" styleClass="cell_big_label" text="\$role" />
         <Label fx:id="name" text="\$first" styleClass="cell_big_label" />
-        <Label fx:id="personId" styleClass="cell_small_label" text="(ID: 1)">
+        <Label fx:id="personIdLabel" styleClass="cell_small_label" text="(ID: 1)">
           <minWidth>
             <Region fx:constant="USE_PREF_SIZE" />
           </minWidth>

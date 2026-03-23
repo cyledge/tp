@@ -10,7 +10,9 @@ import static seedu.clinic.testutil.TypicalPersons.BENSON;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -110,9 +112,9 @@ public class ModelManagerTest {
                 new Phone("91234567"),
                 new Email("patient@example.com"),
                 new Address("1 Street"),
-                java.util.Set.of(),
+                Set.of(),
                 new NRIC("S1166846A"),
-                java.time.LocalDate.of(2000, 1, 1),
+                LocalDate.of(2000, 1, 1),
                 Sex.FEMALE,
                 1);
         Doctor doctor = new Doctor(

@@ -11,6 +11,7 @@ import static seedu.clinic.testutil.TypicalPatients.createNadia;
 import static seedu.clinic.testutil.TypicalPersons.ALICE;
 import static seedu.clinic.testutil.TypicalPersons.getTypicalClinicBook;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -108,7 +109,7 @@ public class ClinicBookTest {
                 new Email("patient@example.com"),
                 new Address("1 Street"),
                 new NRIC("S1166846A"),
-                java.time.LocalDate.of(2000, 1, 1),
+                LocalDate.of(2000, 1, 1),
                 Sex.FEMALE);
         Doctor doctor = new Doctor(
                 new Name("Doctor One"),
@@ -148,7 +149,7 @@ public class ClinicBookTest {
                 new Address("1 Street"),
                 Set.of(),
                 new NRIC("S1166846A"),
-                java.time.LocalDate.of(2000, 1, 1),
+                LocalDate.of(2000, 1, 1),
                 Sex.FEMALE,
                 1);
         clinicBook.addPerson(patient);
