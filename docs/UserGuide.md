@@ -30,7 +30,7 @@ ClinicBook is a **desktop app for managing clinic records, optimized for use via
 
    * `find n/Alice` : Finds persons whose names match the keyword.
 
-   * `add-doc n/Dr Tan Wei Ming p/87654321 e/drtan@example.com` : Adds a doctor record.
+   * `add-doc n/Tan Wei Ming p/87654321 e/drtan@example.com` : Adds a doctor record.
 
    * `get-history nric/S1234567D` : Retrieves the medical history for the matching patient.
 
@@ -135,7 +135,7 @@ Format:
 * `n/`, `p/`, and `e/` are required.
 
 Example:
-`add-doc n/Dr Tan Wei Ming p/87654321 e/drtan@example.com`
+`add-doc n/Tan Wei Ming p/87654321 e/drtan@example.com`
 
 ### Adding a pharmacist : `add-pharmacist`
 
@@ -246,7 +246,7 @@ _Details coming soon ..._
 Action | Format, Examples
 --------|------------------
 **Add Patient** | `add-patient n/NAME nric/NRIC dob/DOB sex/SEX [allergy/ALLERGY]... e/EMAIL p/PHONE a/ADDRESS`<br> e.g., `add-patient n/John Doe nric/S1234567D dob/01-01-1990 sex/MALE allergy/Penicillin e/johnd@example.com p/91234567 a/123 Clementi Ave 3, #04-12`
-**Add Doctor** | `add-doc n/NAME p/PHONE e/EMAIL`<br> e.g., `add-doc n/Dr Tan Wei Ming p/87654321 e/drtan@example.com`
+**Add Doctor** | `add-doc n/NAME p/PHONE e/EMAIL`<br> e.g., `add-doc n/Tan Wei Ming p/87654321 e/drtan@example.com`
 **Add Pharmacist** | `add-pharmacist n/NAME e/EMAIL p/PHONE`<br> e.g., `add-pharmacist n/Lee Mei e/leemei@example.com p/98765432`
 **Clear** | `clear`
 **Delete** | `delete INDEX`<br> e.g., `delete 3`
