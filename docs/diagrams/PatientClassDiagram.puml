@@ -30,7 +30,7 @@ Person *--> "1" Email
 Person *--> "1" Address
 Person *--> "*" Tag
 Patient *--> "1" NRIC
-Patient *--> "1" LocalDate
+Patient *--> "1" LocalDate : dateOfBirth
 Patient *--> "1" Sex
 Patient *--> "*" Diagnosis
 
