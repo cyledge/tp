@@ -43,6 +43,9 @@ public class FindCommandParser implements Parser<FindCommand> {
         return new FindCommand(new PersonMatchesFindCriteriaPredicate(nameKeywords, phone, nric));
     }
 
+    /**
+     * Validates that the find command uses exactly one prefixed criterion and no preamble text.
+     */
     private void validateCommandShape(ArgumentMultimap argMultimap) throws ParseException {
         long presentPrefixCount = Stream.of(PREFIX_NAME, PREFIX_PHONE, PREFIX_NRIC)
                 .filter(prefix -> argMultimap.getValue(prefix).isPresent())
