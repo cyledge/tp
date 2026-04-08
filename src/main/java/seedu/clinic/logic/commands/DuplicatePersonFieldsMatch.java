@@ -75,24 +75,13 @@ public class DuplicatePersonFieldsMatch<T extends Person> {
         return person -> matchingIds.contains(person.getId());
     }
 
-    public String getExactDuplicateMessage(String personLabel) {
-        return String.format("Rejected: an existing %s already has the same name, phone number, and email address. "
-                + "Matching %ss are shown below.", personLabel, personLabel);
-    }
-
-    public String getWarningMessage(String personLabel) {
-        return String.format("Warning: existing %ss with the same %s were found. "
-                + "Press Enter again to continue adding anyway OR key-in 'list' to get the original list."
-                , personLabel, getMatchingFieldSummary());
-    }
-
     private boolean matchesAllContactFields(T existingPerson) {
         return existingPerson.getName().equals(personToAdd.getName())
                 && existingPerson.getPhone().equals(personToAdd.getPhone())
                 && existingPerson.getEmail().equals(personToAdd.getEmail());
     }
 
-    private String getMatchingFieldSummary() {
+    public String getMatchingFieldSummary() {
         List<String> fieldNames = new ArrayList<>();
         if (hasMatchingName) {
             fieldNames.add("name");

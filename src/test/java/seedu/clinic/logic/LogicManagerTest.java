@@ -14,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import seedu.clinic.logic.commands.AddDoctorCommand;
 import seedu.clinic.logic.commands.CommandResult;
 import seedu.clinic.logic.commands.ListCommand;
 import seedu.clinic.logic.commands.exceptions.CommandException;
@@ -22,10 +23,11 @@ import seedu.clinic.model.Model;
 import seedu.clinic.model.ModelManager;
 import seedu.clinic.model.ReadOnlyClinicBook;
 import seedu.clinic.model.UserPrefs;
-import seedu.clinic.testutil.DoctorBuilder;
 import seedu.clinic.storage.JsonClinicBookStorage;
 import seedu.clinic.storage.JsonUserPrefsStorage;
 import seedu.clinic.storage.StorageManager;
+import seedu.clinic.testutil.DoctorBuilder;
+
 
 public class LogicManagerTest {
     private static final IOException DUMMY_IO_EXCEPTION = new IOException("dummy IO exception");
@@ -65,13 +67,13 @@ public class LogicManagerTest {
     }
 
     @Test
-    public void execute_confirmationRequired_reexecuteSameCommand_confirmsAndAdds() throws Exception {
+    public void executeConfirmationRequired_reexecuteSameCommandConfirmsAndAdds() throws Exception {
         model.addPerson(new DoctorBuilder().build());
         String addDoctorCommand = "add-doc n/Dr Bob Tan p/85355255 e/bob@example.com";
 
         CommandResult warningResult = logic.execute(addDoctorCommand);
-        assertEquals("Warning: existing doctors with the same phone number were found. "
-                + "Press Enter again to continue adding anyway.", warningResult.getFeedbackToUser());
+        assertEquals(String.format(AddDoctorCommand.MESSAGE_DUPLICATE_WARNING,
+                "doctor", "phone number"), warningResult.getFeedbackToUser());
         assertEquals(1, model.getFilteredPersonList().size());
 
         CommandResult successResult = logic.execute(addDoctorCommand);

@@ -67,8 +67,8 @@ public class AddPatientCommandTest {
 
         CommandResult commandResult = addPatientCommand.execute(model);
 
-        assertEquals("Warning: existing patients with the same phone number and email address were found. "
-                + "Press Enter again to continue adding anyway.", commandResult.getFeedbackToUser());
+        assertEquals(String.format(AddPatientCommand.MESSAGE_DUPLICATE_WARNING,
+                "patient", "phone number and email address"), commandResult.getFeedbackToUser());
         assertTrue(commandResult.isRequireConfirmation());
         assertEquals(1, model.getFilteredPersonList().size());
         assertEquals(existingPatient, model.getFilteredPersonList().get(0));

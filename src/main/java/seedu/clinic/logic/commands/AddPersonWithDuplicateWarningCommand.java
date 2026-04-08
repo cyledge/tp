@@ -25,6 +25,10 @@ public abstract class AddPersonWithDuplicateWarningCommand<T extends Person>
 
     protected abstract String getSuccessMessage();
 
+    protected abstract String getDuplicateWarningMessage();
+
+    protected abstract String getDuplicateRejectMessage();
+
     /**
      * Hook for subclasses to reject duplicates outside contact-field checks.
      */
@@ -43,12 +47,13 @@ public abstract class AddPersonWithDuplicateWarningCommand<T extends Person>
 
         if (duplicateMatch.hasExactDuplicate()) {
             model.updateFilteredPersonList(duplicateMatch.asPredicate());
-            throw new CommandException(duplicateMatch.getExactDuplicateMessage(getPersonLabel()));
+            throw new CommandException(String.format(getDuplicateRejectMessage(), getPersonLabel(), getPersonLabel()));
         }
 
         if (duplicateMatch.hasAnyMatch() && !isConfirmed) {
             model.updateFilteredPersonList(duplicateMatch.asPredicate());
-            return new CommandResult(duplicateMatch.getWarningMessage(getPersonLabel()),
+            return new CommandResult(String.format(getDuplicateWarningMessage(),
+                            getPersonLabel(), duplicateMatch.getMatchingFieldSummary()),
                     false, false, true);
         }
 

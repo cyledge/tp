@@ -26,8 +26,8 @@ public class AddDoctorCommandTest {
 
         CommandResult commandResult = new AddDoctorCommand(doctorToAdd).execute(model);
 
-        assertEquals("Warning: existing doctors with the same phone number were found. "
-                + "Press Enter again to continue adding anyway.", commandResult.getFeedbackToUser());
+        assertEquals(String.format(AddDoctorCommand.MESSAGE_DUPLICATE_WARNING, "doctor", "phone number"),
+                commandResult.getFeedbackToUser());
         assertTrue(commandResult.isRequireConfirmation());
         assertEquals(1, model.getFilteredPersonList().size());
         assertEquals(existingDoctor, model.getFilteredPersonList().get(0));
@@ -41,9 +41,8 @@ public class AddDoctorCommandTest {
         Doctor doctorToAdd = new DoctorBuilder(existingDoctor).build();
 
         assertThrows(CommandException.class,
-                "Rejected: an existing doctor already has the same name, phone number, and email address. "
-                        + "Matching doctors are shown below.",
-                () -> new AddDoctorCommand(doctorToAdd).execute(model));
+                String.format(AddDoctorCommand.MESSAGE_DUPLICATE_REJECT, "doctor", "doctor"), ()
+                        -> new AddDoctorCommand(doctorToAdd).execute(model));
         assertEquals(1, model.getFilteredPersonList().size());
         assertEquals(existingDoctor, model.getFilteredPersonList().get(0));
     }

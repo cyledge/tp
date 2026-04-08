@@ -9,8 +9,8 @@ import javafx.collections.ObservableList;
 import seedu.clinic.commons.core.GuiSettings;
 import seedu.clinic.commons.core.LogsCenter;
 import seedu.clinic.logic.commands.Command;
-import seedu.clinic.logic.commands.ConfirmableCommand;
 import seedu.clinic.logic.commands.CommandResult;
+import seedu.clinic.logic.commands.ConfirmableCommand;
 import seedu.clinic.logic.commands.exceptions.CommandException;
 import seedu.clinic.logic.parser.ClinicBookParser;
 import seedu.clinic.logic.parser.exceptions.ParseException;
@@ -56,7 +56,8 @@ public class LogicManager implements Logic {
         CommandResult commandResult;
         Command command = clinicBookParser.parseCommand(commandText);
         if (isConfirmedCommand && command instanceof ConfirmableCommand) {
-            ((ConfirmableCommand) command).confirm();
+            ConfirmableCommand confirmable = (ConfirmableCommand) command;
+            confirmable.confirm();
         }
         commandResult = command.execute(model);
         pendingConfirmationCommandText = commandResult.isRequireConfirmation() ? commandText : null;
