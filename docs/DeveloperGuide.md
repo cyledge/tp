@@ -168,6 +168,123 @@ Classes used by multiple components are in the `seedu.clinic.commons` package.
 
 This section describes some noteworthy details on how certain features are implemented.
 
+### Find command
+
+#### Current Implementation
+
+The `find` command filters ClinicBook's in-memory person list using exactly one prefixed criterion:
+
+* `n/` performs case-insensitive full-word name matching.
+* `p/` performs exact phone matching.
+* `nric/` performs exact NRIC matching and only matches `Patient` entries.
+
+Unlike AB3's name-only variant, ClinicBook treats `find` as a mode-selected command. This keeps the user-facing
+command word stable while still allowing each search mode to share the same filtered-list pipeline.
+
+The sequence diagram below shows the execution flow for `find n/Alice Bob`.
+
+<img src="images/FindSequenceDiagram.png" width="800" />
+
+1. `LogicManager` forwards the raw user input to `ClinicBookParser`.
+2. `ClinicBookParser` recognises the `find` command word and delegates argument parsing to `FindCommandParser`.
+3. `FindCommandParser` tokenizes and validates the arguments, then converts the selected search criterion into a
+   `PersonMatchesFindCriteriaPredicate`.
+4. `FindCommand` stores that predicate and passes it to `Model#updateFilteredPersonList(...)` during execution.
+5. `ModelManager` applies the predicate to its internal `FilteredList<Person>`, which in turn updates the list shown
+   in the UI.
+
+This design is intentionally stateful. Commands that act on the currently displayed list can be chained after
+`find` without any extra plumbing, because the filtered list becomes the shared source of truth for follow-up
+operations.
+
+#### Parser Validation
+
+The activity diagram below focuses on the parser-side decisions that determine whether a `FindCommand` can be
+created.
+
+<img src="images/FindValidationActivityDiagram.png" width="640" />
+
+There are four important parser invariants:
+
+* `find Alice` is rejected because unprefixed text is treated as preamble, not a valid search criterion.
+* `find n/Alice p/98765432` is rejected because multiple search modes would make matching semantics ambiguous.
+* `find n/   ` is rejected even though the prefix is present, because blank name values would otherwise reach the
+  word-matching logic and fail later.
+* `find n/Alice n/Bob` is rejected with the duplicate-fields error message because repeated single-valued search
+  prefixes are rejected before command creation.
+
+This early rejection keeps the execution path simple: once a `FindCommand` is created, its predicate is guaranteed
+to contain at least one usable criterion.
+
+#### Matching Semantics
+
+The class diagram below focuses on `PersonMatchesFindCriteriaPredicate` and the classes directly involved in storing,
+applying, and evaluating `find`'s matching state.
+
+<img src="images/FindClassDiagram.png" width="760" />
+
+After parsing succeeds, `FindCommand` stores a `PersonMatchesFindCriteriaPredicate`. The predicate stores `find`'s
+matching state as `nameKeywords`, `phone`, and `nric`, with unused criteria left empty. During execution,
+`FindCommand` passes that predicate through the `Model` interface. Internally, `ModelManager` applies it to the
+`FilteredList<Person>` that backs the displayed person list.
+
+The patient-only NRIC branch is the most distinctive part of the predicate:
+
+```java
+boolean matchesNric = nric.map(value -> person instanceof Patient
+        && ((Patient) person).getNric().equals(value)).orElse(true);
+return matchesName && matchesPhone && matchesNric;
+```
+
+This branch ensures that `find nric/S1234567D` cannot accidentally match a doctor or pharmacist even though all
+person subtypes share the same filtered list.
+
+The three matching modes behave differently by design:
+
+* Name search splits the value by whitespace and checks whether **any** keyword matches a full word in the person's
+  name. Matching is case-insensitive because it relies on `StringUtil.containsWordIgnoreCase(...)`.
+* Phone search delegates parsing to `ParserUtil.parsePhone(...)` and then uses exact equality, so partial numbers do
+  not match.
+* NRIC search delegates parsing to `ParserUtil.parseNric(...)` and then performs exact equality on `Patient`
+  instances only.
+
+Representative scenarios:
+
+* `find n/Alice Bob` returns persons whose names contain either `Alice` or `Bob` as full words.
+* `find n/Alice p/98765432` fails fast with the standard invalid-command-format message.
+* `find nric/S1234567D` returns only the patient with that NRIC.
+
+The behaviour described above is cross-checked by `FindCommandParserTest`, `FindCommandTest`, and
+`PersonMatchesFindCriteriaPredicateTest`.
+
+#### Design Considerations
+
+**Aspect: Command shape**
+
+* **Alternative 1 (current choice):** Keep one `find` command and select the search mode through prefixes.
+
+  * Pros: Preserves one stable command word, one execution path, and one filtered-list workflow for downstream
+    commands.
+  * Cons: The parser must actively reject invalid multi-prefix combinations.
+* **Alternative 2:** Introduce separate commands such as `find-patient` or `find-phone`.
+
+  * Pros: Each command can enforce simpler command-specific rules.
+  * Cons: Duplicates command dispatch, documentation, and future extension work.
+
+#### \[Proposed\] Future extension: role-specific filtering
+
+If a future iteration needs subtype-aware narrowing for workflows that mainly target patients, the cleaner extension
+is to keep `find` as a single command and add an optional role filter, for example `find role/patient n/Alice`.
+
+This extension is **not** implemented in v1.6.
+
+Keeping the role filter inside `find` is preferable to introducing `find-patient`, `find-doctor`, and
+`find-pharmacist` variants:
+
+* The current parser already centralises all `find` modes in `FindCommandParser`.
+* The current predicate already contains subtype-aware logic for NRIC lookups.
+* A future `role/` prefix would extend the existing predicate more cleanly than multiplying command words.
+
 ### \[Proposed\] Undo/redo feature
 
 #### Proposed Implementation
