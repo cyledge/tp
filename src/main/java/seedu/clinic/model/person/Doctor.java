@@ -92,12 +92,11 @@ public class Doctor extends Staff {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
+        return new ToStringBuilder("Doctor")
                 .add("name", getName())
                 .add("id", getId())
                 .add("phone", getPhone())
                 .add("email", getEmail())
-                .add("tags", getTags())
                 .toString();
     }
 }
