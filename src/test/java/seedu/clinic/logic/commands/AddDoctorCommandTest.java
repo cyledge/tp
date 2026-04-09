@@ -49,6 +49,26 @@ public class AddDoctorCommandTest {
     }
 
     @Test
+    public void execute_exactContactDuplicate_filtersOnlyExactMatches() {
+        Model model = new ModelManager();
+        Doctor exactMatch = new DoctorBuilder().build();
+        Doctor partialMatch = new DoctorBuilder()
+                .withName("Dr Bob Tan")
+                .withPhone(exactMatch.getPhone().value)
+                .withEmail("partial@example.com")
+                .build();
+        model.addPerson(exactMatch);
+        model.addPerson(partialMatch);
+        Doctor doctorToAdd = new DoctorBuilder(exactMatch).build();
+
+        assertThrows(CommandException.class,
+                String.format(AddPersonWithDuplicateWarningCommand.MESSAGE_DUPLICATE_REJECT, "doctor", "doctor"), ()
+                        -> new AddDoctorCommand(doctorToAdd).execute(model));
+        assertEquals(1, model.getFilteredPersonList().size());
+        assertEquals(exactMatch, model.getFilteredPersonList().get(0));
+    }
+
+    @Test
     public void execute_exactContactDuplicateWithDifferentNameCase_throwsCommandException() {
         Model model = new ModelManager();
         Doctor existingDoctor = new DoctorBuilder().build();

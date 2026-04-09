@@ -75,6 +75,17 @@ public class DuplicatePersonFieldsMatch<T extends Person> {
         return person -> matchingIds.contains(person.getId());
     }
 
+    /**
+     * Returns a predicate that keeps only exact duplicate persons visible.
+     */
+    public Predicate<Person> asExactDuplicatePredicate() {
+        Set<Integer> matchingIds = matchingPersons.stream()
+                .filter(this::matchesAllContactFields)
+                .map(Person::getId)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        return person -> matchingIds.contains(person.getId());
+    }
+
     private boolean matchesAllContactFields(T existingPerson) {
         return hasSameName(existingPerson, personToAdd)
                 && existingPerson.getPhone().equals(personToAdd.getPhone())

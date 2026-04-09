@@ -62,7 +62,7 @@ public abstract class AddPersonWithDuplicateWarningCommand<T extends Person>
                 DuplicatePersonFieldsMatch.find(model, personToAdd, getPersonType());
 
         if (shouldRejectExactDuplicate() && duplicateMatch.hasExactDuplicate()) {
-            model.updateFilteredPersonList(duplicateMatch.asPredicate());
+            model.updateFilteredPersonList(duplicateMatch.asExactDuplicatePredicate());
             throw new CommandException(String.format(getDuplicateRejectMessage(), getPersonLabel(), getPersonLabel()));
         }
 
