@@ -3,7 +3,9 @@ package seedu.clinic.storage;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -16,9 +18,10 @@ import seedu.clinic.model.person.NRIC;
 import seedu.clinic.model.person.Patient;
 import seedu.clinic.model.person.Person;
 import seedu.clinic.model.person.Sex;
+import seedu.clinic.model.tag.Tag;
 
 /**
- * Jackson-friendly version of {@link `Patient`}.
+ * Jackson-friendly version of {@link Patient}.
  */
 class JsonAdaptedPatient extends JsonAdaptedPerson {
 
@@ -32,6 +35,7 @@ class JsonAdaptedPatient extends JsonAdaptedPerson {
     private final String nric;
     private final String dateOfBirth;
     private final String sex;
+    private final List<JsonAdaptedTag> allergies = new ArrayList<>();
     private final List<JsonAdaptedDiagnosis> diagnoses = new ArrayList<>();
     private final List<JsonAdaptedLabTest> labTests = new ArrayList<>();
 
@@ -51,16 +55,20 @@ class JsonAdaptedPatient extends JsonAdaptedPerson {
     @JsonCreator
     public JsonAdaptedPatient(@JsonProperty("id") int id, @JsonProperty("name") String name,
                   @JsonProperty("phone") String phone, @JsonProperty("email") String email,
-                  @JsonProperty("address") String address, @JsonProperty("tags") List<JsonAdaptedTag> tags,
+                  @JsonProperty("address") String address,
+                  @JsonProperty("allergies") List<JsonAdaptedTag> allergies,
                   @JsonProperty("nric") String nric,
                   @JsonProperty("dateOfBirth") String dateOfBirth,
                   @JsonProperty("sex") String sex,
                   @JsonProperty("diagnoses") List<JsonAdaptedDiagnosis> diagnoses,
                   @JsonProperty("labTests") List<JsonAdaptedLabTest> labTests) {
-        super(id, name, phone, email, address, tags);
+        super(id, name, phone, email, address);
         this.nric = nric;
         this.dateOfBirth = dateOfBirth;
         this.sex = sex;
+        if (allergies != null) {
+            this.allergies.addAll(allergies);
+        }
         if (diagnoses != null) {
             this.diagnoses.addAll(diagnoses);
         }
@@ -74,10 +82,11 @@ class JsonAdaptedPatient extends JsonAdaptedPerson {
      */
     public JsonAdaptedPatient(Patient source) {
         super(source.getId(), source.getName().fullName, source.getPhone().value,
-                source.getEmail().value, source.getAddress().value,
-                new ArrayList<>(source.getTags().stream()
-                        .map(JsonAdaptedTag::new)
-                        .collect(Collectors.toList())));
+                source.getEmail().value, source.getAddress().value);
+
+        allergies.addAll(source.getAllergies().stream()
+                .map(JsonAdaptedTag::new)
+                .collect(Collectors.toList()));
 
         nric = source.getNric().value;
         dateOfBirth = source.getDateOfBirth().toString();
@@ -132,6 +141,11 @@ class JsonAdaptedPatient extends JsonAdaptedPerson {
             throw new IllegalValueException(INVALID_SEX_MESSAGE);
         }
 
+        final Set<Tag> modelAllergies = new HashSet<>();
+        for (JsonAdaptedTag tag : allergies) {
+            modelAllergies.add(tag.toModelType());
+        }
+
         final List<Diagnosis> modelDiagnoses = new ArrayList<>();
         for (JsonAdaptedDiagnosis d : diagnoses) {
             modelDiagnoses.add(d.toModelType());
@@ -142,7 +156,7 @@ class JsonAdaptedPatient extends JsonAdaptedPerson {
             modelLabTests.add(t.toModelType());
         }
 
-        Patient patient = new Patient(person, modelNric, modelDob, modelSex);
+        Patient patient = new Patient(person, modelAllergies, modelNric, modelDob, modelSex);
         modelDiagnoses.forEach(patient::addDiagnosis);
         modelLabTests.forEach(patient::addLabTest);
 
