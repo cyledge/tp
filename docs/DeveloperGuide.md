@@ -276,8 +276,6 @@ The behaviour described above is cross-checked by `FindCommandParserTest`, `Find
 If a future iteration needs subtype-aware narrowing for workflows that mainly target patients, the cleaner extension
 is to keep `find` as a single command and add an optional role filter, for example `find role/patient n/Alice`.
 
-This extension is **not** implemented in v1.6.
-
 Keeping the role filter inside `find` is preferable to introducing `find-patient`, `find-doctor`, and
 `find-pharmacist` variants:
 
