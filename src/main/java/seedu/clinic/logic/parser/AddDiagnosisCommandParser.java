@@ -59,6 +59,9 @@ public class AddDiagnosisCommandParser implements Parser<AddDiagnosisCommand> {
         int patientId = ParserUtil.parsePersonId(argMultimap.getValue(PREFIX_ID).get());
         String description = argMultimap.getValue(PREFIX_DESC).get();
         LocalDate visitDate = ParserUtil.parseDate(argMultimap.getValue(PREFIX_VISIT_DATE).get());
+        if (visitDate.isAfter(LocalDate.now())) {
+            throw new ParseException(AddDiagnosisCommand.MESSAGE_FUTURE_VISIT_DATE);
+        }
         int diagnosedById = ParserUtil.parsePersonId(argMultimap.getValue(PREFIX_DIAGNOSED_BY).get());
         List<String> symptoms = argMultimap.getAllValues(PREFIX_SYMPTOM);
 
