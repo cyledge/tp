@@ -18,6 +18,7 @@ import seedu.clinic.commons.core.GuiSettings;
 import seedu.clinic.logic.commands.exceptions.CommandException;
 import seedu.clinic.model.ClinicBook;
 import seedu.clinic.model.Model;
+import seedu.clinic.model.ModelManager;
 import seedu.clinic.model.ReadOnlyClinicBook;
 import seedu.clinic.model.ReadOnlyUserPrefs;
 import seedu.clinic.model.person.Diagnosis;
@@ -57,6 +58,86 @@ public class AddPatientCommandTest {
     }
 
     @Test
+    public void execute_partialContactDuplicate_returnsWarning() throws Exception {
+        Model model = new ModelManager();
+        Patient existingPatient = createPatient("Amy Bee", "S1234567D");
+        model.addPerson(existingPatient);
+        Patient patientToAdd = createPatient("Beatrice Lim", "T1234567J");
+        AddPatientCommand addPatientCommand = new AddPatientCommand(patientToAdd);
+
+        CommandResult commandResult = addPatientCommand.execute(model);
+
+        assertEquals(String.format(AddPersonWithDuplicateWarningCommand.MESSAGE_DUPLICATE_WARNING,
+                "patient", "phone number / email address"), commandResult.getFeedbackToUser());
+        assertTrue(commandResult.isRequireConfirmation());
+        assertEquals(1, model.getFilteredPersonList().size());
+        assertEquals(existingPatient, model.getFilteredPersonList().get(0));
+    }
+
+    @Test
+    public void execute_exactContactDuplicate_returnsWarning() throws Exception {
+        Model model = new ModelManager();
+        Patient existingPatient = createPatient("Amy Bee", "S1234567D");
+        model.addPerson(existingPatient);
+        Patient patientToAdd = createPatient("Amy Bee", "T1234567J");
+
+        CommandResult commandResult = new AddPatientCommand(patientToAdd).execute(model);
+
+        assertEquals(String.format(AddPersonWithDuplicateWarningCommand.MESSAGE_DUPLICATE_WARNING,
+                "patient", "name / phone number / email address"), commandResult.getFeedbackToUser());
+        assertTrue(commandResult.isRequireConfirmation());
+        assertEquals(1, model.getFilteredPersonList().size());
+        assertEquals(existingPatient, model.getFilteredPersonList().get(0));
+    }
+
+    @Test
+    public void execute_nameDuplicateWithDifferentCase_returnsWarning() throws Exception {
+        Model model = new ModelManager();
+        Patient existingPatient = createPatient("Amy Bee", "S1234567D");
+        model.addPerson(existingPatient);
+        Patient patientToAdd = createPatient("amy bee", "T1234567J");
+
+        CommandResult commandResult = new AddPatientCommand(patientToAdd).execute(model);
+
+        assertEquals(String.format(AddPersonWithDuplicateWarningCommand.MESSAGE_DUPLICATE_WARNING,
+                "patient", "name / phone number / email address"), commandResult.getFeedbackToUser());
+        assertTrue(commandResult.isRequireConfirmation());
+        assertEquals(1, model.getFilteredPersonList().size());
+        assertEquals(existingPatient, model.getFilteredPersonList().get(0));
+    }
+
+    @Test
+    public void execute_emailDuplicateWithDifferentCase_returnsWarning() throws Exception {
+        Model model = new ModelManager();
+        Patient existingPatient = createPatient("Amy Bee", "S1234567D");
+        model.addPerson(existingPatient);
+        Patient patientToAdd = createPatientWithEmail("Beatrice Lim", "T1234567J", "AMY@GMAIL.COM");
+
+        CommandResult commandResult = new AddPatientCommand(patientToAdd).execute(model);
+
+        assertEquals(String.format(AddPersonWithDuplicateWarningCommand.MESSAGE_DUPLICATE_WARNING,
+                "patient", "email address"), commandResult.getFeedbackToUser());
+        assertTrue(commandResult.isRequireConfirmation());
+        assertEquals(1, model.getFilteredPersonList().size());
+        assertEquals(existingPatient, model.getFilteredPersonList().get(0));
+    }
+
+    @Test
+    public void execute_confirmedAfterWarning_addSuccessful() throws Exception {
+        Model model = new ModelManager();
+        model.addPerson(createPatient("Amy Bee", "S1234567D"));
+        Patient patientToAdd = createPatient("Beatrice Lim", "T1234567J");
+        AddPatientCommand addPatientCommand = new AddPatientCommand(patientToAdd);
+
+        addPatientCommand.execute(model);
+        addPatientCommand.confirm();
+        CommandResult commandResult = addPatientCommand.execute(model);
+
+        assertEquals(String.format(AddPatientCommand.MESSAGE_SUCCESS, patientToAdd), commandResult.getFeedbackToUser());
+        assertEquals(2, model.getClinicBook().getPersonList().size());
+    }
+
+    @Test
     public void equals() {
         Patient alicePatient = createPatient("Alice Pauline", "T1234567J");
         Patient bobPatient = createPatient("Bob Choo", "S1234567D");
@@ -85,6 +166,16 @@ public class AddPatientCommandTest {
         Person person = new PersonBuilder()
                 .withId(0)
                 .withName(name)
+                .build();
+        return new Patient(person, new NRIC(nric), LocalDate.of(1990, 1, 1), Sex.FEMALE);
+    }
+
+    private Patient createPatientWithEmail(String name, String nric, String email) {
+        Person person = new PersonBuilder()
+                .withId(0)
+                .withName(name)
+                .withPhone("81234567")
+                .withEmail(email)
                 .build();
         return new Patient(person, new NRIC(nric), LocalDate.of(1990, 1, 1), Sex.FEMALE);
     }
