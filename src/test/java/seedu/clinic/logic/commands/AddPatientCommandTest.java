@@ -160,6 +160,11 @@ public class AddPatientCommandTest {
         }
 
         @Override
+        public void addLabTest(Patient target, seedu.clinic.model.person.LabTest labTest) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public ObservableList<Person> getFilteredPersonList() {
             throw new AssertionError("This method should not be called.");
         }

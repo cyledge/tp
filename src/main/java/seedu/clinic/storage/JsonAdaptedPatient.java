@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import seedu.clinic.commons.exceptions.IllegalValueException;
 import seedu.clinic.model.person.Diagnosis;
+import seedu.clinic.model.person.LabTest;
 import seedu.clinic.model.person.NRIC;
 import seedu.clinic.model.person.Patient;
 import seedu.clinic.model.person.Person;
@@ -36,6 +37,17 @@ class JsonAdaptedPatient extends JsonAdaptedPerson {
     private final String sex;
     private final List<JsonAdaptedTag> allergies = new ArrayList<>();
     private final List<JsonAdaptedDiagnosis> diagnoses = new ArrayList<>();
+    private final List<JsonAdaptedLabTest> labTests = new ArrayList<>();
+
+    /**
+     * Constructs a {@code JsonAdaptedPatient} with the given patient details.
+     * This constructor omits labTests and defaults them to an empty list.
+     */
+    public JsonAdaptedPatient(int id, String name, String phone, String email, String address,
+                  List<JsonAdaptedTag> tags, String nric, String dateOfBirth, String sex,
+                  List<JsonAdaptedDiagnosis> diagnoses) {
+        this(id, name, phone, email, address, tags, nric, dateOfBirth, sex, diagnoses, null);
+    }
 
     /**
      * Constructs a {@code JsonAdaptedPatient} with the given patient details.
@@ -48,7 +60,8 @@ class JsonAdaptedPatient extends JsonAdaptedPerson {
                   @JsonProperty("nric") String nric,
                   @JsonProperty("dateOfBirth") String dateOfBirth,
                   @JsonProperty("sex") String sex,
-                  @JsonProperty("diagnoses") List<JsonAdaptedDiagnosis> diagnoses) {
+                  @JsonProperty("diagnoses") List<JsonAdaptedDiagnosis> diagnoses,
+                  @JsonProperty("labTests") List<JsonAdaptedLabTest> labTests) {
         super(id, name, phone, email, address);
         this.nric = nric;
         this.dateOfBirth = dateOfBirth;
@@ -58,6 +71,9 @@ class JsonAdaptedPatient extends JsonAdaptedPerson {
         }
         if (diagnoses != null) {
             this.diagnoses.addAll(diagnoses);
+        }
+        if (labTests != null) {
+            this.labTests.addAll(labTests);
         }
     }
 
@@ -78,6 +94,10 @@ class JsonAdaptedPatient extends JsonAdaptedPerson {
 
         diagnoses.addAll(source.getDiagnoses().stream()
                 .map(JsonAdaptedDiagnosis::new)
+                .collect(Collectors.toList()));
+
+        labTests.addAll(source.getLabTests().stream()
+                .map(JsonAdaptedLabTest::new)
                 .collect(Collectors.toList()));
     }
 
@@ -131,8 +151,14 @@ class JsonAdaptedPatient extends JsonAdaptedPerson {
             modelDiagnoses.add(d.toModelType());
         }
 
+        final List<LabTest> modelLabTests = new ArrayList<>();
+        for (JsonAdaptedLabTest t : labTests) {
+            modelLabTests.add(t.toModelType());
+        }
+
         Patient patient = new Patient(person, modelAllergies, modelNric, modelDob, modelSex);
         modelDiagnoses.forEach(patient::addDiagnosis);
+        modelLabTests.forEach(patient::addLabTest);
 
         return patient;
     }

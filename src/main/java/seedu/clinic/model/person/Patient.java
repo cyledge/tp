@@ -24,6 +24,7 @@ public class Patient extends Person {
     private final LocalDate dateOfBirth;
     private final Sex sex;
     private final List<Diagnosis> diagnoses = new ArrayList<>();
+    private final List<LabTest> labTests = new ArrayList<>();
 
     /**
      * Every field must be present and not null.
@@ -127,6 +128,26 @@ public class Patient extends Person {
 
     public List<Diagnosis> getDiagnoses() {
         return Collections.unmodifiableList(diagnoses);
+    }
+
+    /**
+     * Adds a lab test to the patient's lab test list.
+     */
+    public void addLabTest(LabTest labTest) {
+        requireAllNonNull(labTest);
+        labTests.add(labTest);
+    }
+
+    /**
+     * Removes a lab test from the patient's lab test list.
+     */
+    public void removeLabTest(LabTest labTest) {
+        requireAllNonNull(labTest);
+        labTests.remove(labTest);
+    }
+
+    public List<LabTest> getLabTests() {
+        return Collections.unmodifiableList(labTests);
     }
 
     @Override
