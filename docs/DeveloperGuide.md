@@ -1056,6 +1056,13 @@ testers are expected to do more *exploratory* testing.
       Expected: Similar to previous.
 2. _{ more test cases … }_
 
+### Adding a Doctor
+
+1. Adding a Doctor with the same name
+
+   1. Prerequisite: A Doctor with the same name, e.g. `Dr Tom Chan`, is in the ClinicBook.
+   2. Test case: `add-doc n/Dr Tom Chan p/... e/...` Expected: A warning message with the Doctor with the same name is returned. Enter again to add the new record.
+
 ### Saving data
 
 1. Dealing with missing/corrupted data files
