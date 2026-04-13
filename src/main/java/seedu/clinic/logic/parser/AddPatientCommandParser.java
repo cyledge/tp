@@ -39,7 +39,7 @@ public class AddPatientCommandParser implements Parser<AddPatientCommand> {
     private static final DateTimeFormatter DOB_FORMATTER =
             DateTimeFormatter.ofPattern("uuuu-MM-dd").withResolverStyle(ResolverStyle.STRICT);
     private static final String MESSAGE_INVALID_DOB =
-            "DOB must be a valid date in yyyy-MM-dd format and cannot be in the future.";
+            "DOB must be a valid date in yyyy-MM-dd format and cannot be later than today.";
     private static final String MESSAGE_INVALID_SEX = "Sex must be one of: MALE, FEMALE, INTERSEX.";
     private static final String MESSAGE_NRIC_DOB_MISMATCH =
             "NRIC/FIN's first two digits must match the last two digits of the birth year.";
