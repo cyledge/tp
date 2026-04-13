@@ -160,7 +160,7 @@ public class AddPatientCommandParserTest {
                 + " a/123, Jurong West Ave 6, #08-111";
 
         assertParseFailure(parser, invalidDob,
-                "DOB must be a valid date in yyyy-MM-dd format and cannot be in the future.");
+                "DOB must be a valid date in yyyy-MM-dd format and cannot be later than today.");
     }
 
     @Test
@@ -174,7 +174,7 @@ public class AddPatientCommandParserTest {
                 + " a/123, Jurong West Ave 6, #08-111";
 
         assertParseFailure(parser, invalidChronologicalDob,
-                "DOB must be a valid date in yyyy-MM-dd format and cannot be in the future.");
+                "DOB must be a valid date in yyyy-MM-dd format and cannot be later than today.");
     }
 
     @Test
@@ -188,7 +188,7 @@ public class AddPatientCommandParserTest {
                 + " a/123, Jurong West Ave 6, #08-111";
 
         assertParseFailure(parser, futureDob,
-                "DOB must be a valid date in yyyy-MM-dd format and cannot be in the future.");
+                "DOB must be a valid date in yyyy-MM-dd format and cannot be later than today.");
     }
 
     @Test
