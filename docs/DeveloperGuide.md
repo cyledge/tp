@@ -365,8 +365,6 @@ The following activity diagram summarizes what happens when a user executes a ne
   * Pros: Will use less memory (e.g., for `delete`, just save the person being deleted).
   * Cons: We must ensure that the implementation of each individual command is correct.
 
-_{more aspects and alternatives to be added}_
-
 ---
 
 ## **Documentation, logging, testing, configuration, dev-ops**
@@ -1041,7 +1039,6 @@ testers are expected to do more *exploratory* testing.
    1. Resize the window to an optimum size. Move the window to a different location. Close the window.
    2. Re-launch the app by double-clicking the jar file.<br>
       Expected: The most recent window size and location is retained.
-3. _{ more test cases … }_
 
 ### Finding persons
 
@@ -1068,11 +1065,3 @@ records.
       Expected: No person is deleted. Error details are shown in the status message. Status bar remains the same.
    4. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size).<br>
       Expected: Similar to the previous test case.
-2. _{ more test cases … }_
-
-### Saving data
-
-1. Dealing with missing/corrupted data files
-
-   1. _{explain how to simulate a missing/corrupted file, and the expected behavior}_
-2. _{ more test cases … }_
