@@ -17,11 +17,14 @@ import seedu.clinic.model.ModelManager;
 import seedu.clinic.model.UserPrefs;
 import seedu.clinic.model.person.Address;
 import seedu.clinic.model.person.Diagnosis;
+import seedu.clinic.model.person.Doctor;
 import seedu.clinic.model.person.Email;
+import seedu.clinic.model.person.LabTest;
 import seedu.clinic.model.person.NRIC;
 import seedu.clinic.model.person.Name;
 import seedu.clinic.model.person.Patient;
 import seedu.clinic.model.person.Person;
+import seedu.clinic.model.person.Pharmacist;
 import seedu.clinic.model.person.Phone;
 import seedu.clinic.model.person.Prescription;
 import seedu.clinic.model.person.Sex;
@@ -55,12 +58,13 @@ public class GetHistoryCommandTest {
         String expectedMessage = "Medical history for Alice Tan (NRIC: S1234567D)" + lineSep
                 + "Date of birth: 1990-01-01" + lineSep
                 + "Diagnoses:" + lineSep
-            + "  1. Hypertension (Visit date: 2024-05-20, Diagnosed by ID: 3)" + lineSep
+            + "  1. Hypertension (Visit date: 2024-05-20, Diagnosed by: Dr Carl (ID: 3))" + lineSep
                 + "     Symptoms: headache, dizziness" + lineSep
                 + "     Prescriptions:" + lineSep
-            + "       - Amlodipine, dosage: 5mg, frequency: once daily, prescribed by ID: N/A, "
-            + "dispensed by ID: 4" + lineSep
-            + "Lab/Imaging Tests: none ordered.";
+            + "       - Amlodipine, dosage: 5mg, frequency: once daily, prescribed by: N/A, "
+            + "dispensed by: Pharma Pat (ID: 4)" + lineSep
+            + "Lab/Imaging Tests:" + lineSep
+            + "  1. [IMAGING] Chest X-Ray (Ordered date: 2026-04-08, Ordered by: Dr Carl (ID: 3))";
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
     }
 
@@ -95,8 +99,19 @@ public class GetHistoryCommandTest {
         diagnosis.addSymptom("dizziness");
         diagnosis.addPrescription(new Prescription("Amlodipine", "5mg", "once daily", 4));
         alice.addDiagnosis(diagnosis);
+        alice.addLabTest(new LabTest("Chest X-Ray", LabTest.TestType.IMAGING, 3, LocalDate.of(2026, 4, 8)));
 
         clinicBook.addPerson(alice);
+        clinicBook.addPerson(new Doctor(
+            new Name("Dr Carl"),
+            new Phone("90000003"),
+            new Email("dr.carl@example.com"),
+            3));
+        clinicBook.addPerson(new Pharmacist(
+            new Name("Pharma Pat"),
+            new Phone("90000004"),
+            new Email("pharma.pat@example.com"),
+            4));
         clinicBook.addPerson(new Patient(
                 new Name("Bob Lee"),
                 new Phone("92345678"),
