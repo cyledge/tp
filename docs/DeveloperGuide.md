@@ -95,18 +95,18 @@ Here's a (partial) class diagram of the `Logic` component:
 
 The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("delete 1")` API call as an example.
 
-![Interactions Inside the Logic Component for the delete 1</code> Command](images/DeleteSequenceDiagram.png)
+![Interactions Inside the Logic Component for the delete 1 Command](images/DeleteSequenceDiagram.png)
 
-<div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `DeleteCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
+<div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `DeleteCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues until the end of the diagram.
 </div>
 
 How the `Logic` component works:
 
-1. When `Logic` is called upon to execute a command, it is passed to an `ClinicBookParser` object which in turn creates a parser that matches the command (e.g., `DeleteCommandParser`) and uses it to parse the command.
-2. This results in a `Command` object (more precisely, an object of one of its subclasses e.g., `DeleteCommand`) which is executed by the `LogicManager`.
-3. The command can communicate with the `Model` when it is executed (e.g. to delete a person).`<br>`
+1. When `Logic` is called upon to execute a command, it is passed to a `ClinicBookParser` object which in turn creates a parser that matches the command (e.g., `DeleteCommandParser`) and uses it to parse the command.
+2. This results in a `Command` object (more precisely, an object of one of its subclasses, e.g., `DeleteCommand`) which is executed by the `LogicManager`.
+3. The command can communicate with the `Model` when it is executed (e.g., to delete a person).<br>
    Note that although this is shown as a single step in the diagram above (for simplicity), in the code it can take several interactions (between the command object and the `Model`) to achieve.
-4. The result of the command execution is encapsulated as a `CommandResult` object which is returned back from `Logic`.
+4. The result of the command execution is encapsulated as a `CommandResult` object which is returned from `Logic`.
 
 Here are the other classes in `Logic` (omitted from the class diagram above) that are used for parsing a user command:
 
@@ -114,8 +114,8 @@ Here are the other classes in `Logic` (omitted from the class diagram above) tha
 
 How the parsing works:
 
-* When called upon to parse a user command, the `ClinicBookParser` class creates an `XYZCommandParser` (`XYZ` is a placeholder for the specific command name e.g., `DeleteCommandParser`) which uses the other classes shown above to parse the user command and create a `XYZCommand` object (e.g., `DeleteCommand`) which the `ClinicBookParser` returns back as a `Command` object.
-* All `XYZCommandParser` classes (e.g., `DeleteCommandParser`, `FindCommandParser`, ...) inherit from the `Parser` interface so that they can be treated similarly where possible e.g, during testing.
+* When called upon to parse a user command, the `ClinicBookParser` class creates an `XYZCommandParser` (`XYZ` is a placeholder for the specific command name, e.g., `DeleteCommandParser`) which uses the other classes shown above to parse the user command and create a `XYZCommand` object (e.g., `DeleteCommand`) which the `ClinicBookParser` returns as a `Command` object.
+* All `XYZCommandParser` classes (e.g., `DeleteCommandParser`, `FindCommandParser`, ...) inherit from the `Parser` interface so that they can be treated similarly where possible e.g., during testing.
 
 ### Model component
 
@@ -125,12 +125,10 @@ How the parsing works:
 
 The `Model` component,
 
-* stores the clinic book data i.e., all `Person` objects (which are contained in a `UniquePersonList` object).
-* stores the currently 'selected' `Person` objects (e.g., results of a search query) as a separate _filtered_ list which is exposed to outsiders as an unmodifiable `ObservableList<Person>` that can be 'observed' e.g. the UI can be bound to this list so that the UI automatically updates when the data in the list change.
-* stores a `UserPref` object that represents the user’s preferences. This is exposed to the outside as a `ReadOnlyUserPref` objects.
+* stores the clinic book data, i.e., all `Person` objects (which are contained in a `UniquePersonList` object).
+* stores the currently 'selected' `Person` objects (e.g., results of a search query) as a separate _filtered_ list which is exposed to outsiders as an unmodifiable `ObservableList<Person>` that can be 'observed' e.g., the UI can be bound to this list so that the UI automatically updates when the data in the list changes.
+* stores a `UserPrefs` object that represents the user's preferences. This is exposed to the outside via the `ReadOnlyUserPrefs` interface.
 * does not depend on any of the other three components (as the `Model` represents data entities of the domain, they should make sense on their own without depending on other components)
-
-
 
 The class diagram below focuses on the `Person` inheritance hierarchy used by the model.
 
@@ -155,7 +153,7 @@ The class diagram below focuses on the `Patient` specialisation and its related 
 The `Storage` component,
 
 * can save both clinic book data and user preference data in JSON format, and read them back into corresponding objects.
-* inherits from both `ClinicBookStorage` and `UserPrefStorage`, which means it can be treated as either one (if only the functionality of only one is needed).
+* is defined by the `Storage` interface, which extends both `ClinicBookStorage` and `UserPrefsStorage`. `StorageManager` implements `Storage`, so it can be used where either storage interface is expected.
 * depends on some classes in the `Model` component (because the `Storage` component's job is to save/retrieve objects that belong to the `Model`)
 
 ### Common classes
@@ -167,6 +165,121 @@ Classes used by multiple components are in the `seedu.clinic.commons` package.
 ## **Implementation**
 
 This section describes some noteworthy details on how certain features are implemented.
+
+### Find command
+
+#### Current Implementation
+
+The `find` command filters ClinicBook's in-memory person list using exactly one prefixed criterion:
+
+* `n/` performs case-insensitive full-word name matching.
+* `p/` performs exact phone matching.
+* `nric/` performs exact NRIC matching and only matches `Patient` entries.
+
+Unlike AB3's name-only variant, ClinicBook treats `find` as a mode-selected command. This keeps the user-facing
+command word stable while still allowing each search mode to share the same filtered-list pipeline.
+
+The sequence diagram below shows the execution flow for `find n/Alice Bob`.
+
+<img src="images/FindSequenceDiagram.png" width="800" />
+
+1. `LogicManager` forwards the raw user input to `ClinicBookParser`.
+2. `ClinicBookParser` recognises the `find` command word and delegates argument parsing to `FindCommandParser`.
+3. `FindCommandParser` tokenizes and validates the arguments, then converts the selected search criterion into a
+   `PersonMatchesFindCriteriaPredicate`.
+4. `FindCommand` stores that predicate and passes it to `Model#updateFilteredPersonList(...)` during execution.
+5. `ModelManager` applies the predicate to its internal `FilteredList<Person>`, which in turn updates the list shown
+   in the UI.
+
+This design is intentionally stateful. Commands that act on the currently displayed list can be chained after
+`find` without any extra plumbing, because the filtered list becomes the shared source of truth for follow-up
+operations.
+
+#### Parser Validation
+
+The activity diagram below focuses on the parser-side decisions that determine whether a `FindCommand` can be
+created.
+
+<img src="images/FindValidationActivityDiagram.png" width="640" />
+
+There are four important parser invariants:
+
+* `find Alice` is rejected because unprefixed text is treated as preamble, not a valid search criterion.
+* `find n/Alice p/98765432` is rejected because multiple search modes would make matching semantics ambiguous.
+* `find n/   ` is rejected even though the prefix is present, because blank name values would otherwise reach the
+  word-matching logic and fail later.
+* `find n/Alice n/Bob` is rejected with the duplicate-fields error message because repeated single-valued search
+  prefixes are rejected before command creation.
+
+This early rejection keeps the execution path simple: once a `FindCommand` is created, its predicate is guaranteed
+to contain at least one usable criterion.
+
+#### Matching Semantics
+
+The class diagram below focuses on `PersonMatchesFindCriteriaPredicate` and the classes directly involved in storing,
+applying, and evaluating `find`'s matching state.
+
+<img src="images/FindClassDiagram.png" width="760" />
+
+After parsing succeeds, `FindCommand` stores a `PersonMatchesFindCriteriaPredicate`. The predicate stores `find`'s
+matching state as `nameKeywords`, `phone`, and `nric`, with unused criteria left empty. During execution,
+`FindCommand` passes that predicate through the `Model` interface. Internally, `ModelManager` applies it to the
+`FilteredList<Person>` that backs the displayed person list.
+
+The patient-only NRIC branch is the most distinctive part of the predicate:
+
+```java
+boolean matchesNric = nric.map(value -> person instanceof Patient
+        && ((Patient) person).getNric().equals(value)).orElse(true);
+return matchesName && matchesPhone && matchesNric;
+```
+
+This branch ensures that `find nric/S1234567D` cannot accidentally match a doctor or pharmacist even though all
+person subtypes share the same filtered list.
+
+The three matching modes behave differently by design:
+
+* Name search splits the value by whitespace and checks whether **any** keyword matches a full word in the person's
+  name. Matching is case-insensitive because it relies on `StringUtil.containsWordIgnoreCase(...)`.
+* Phone search delegates parsing to `ParserUtil.parsePhone(...)` and then uses exact equality, so partial numbers do
+  not match.
+* NRIC search delegates parsing to `ParserUtil.parseNric(...)` and then performs exact equality on `Patient`
+  instances only.
+
+Representative scenarios:
+
+* `find n/Alice Bob` returns persons whose names contain either `Alice` or `Bob` as full words.
+* `find n/Alice p/98765432` fails fast with the standard invalid-command-format message.
+* `find nric/S1234567D` returns only the patient with that NRIC.
+
+The behaviour described above is cross-checked by `FindCommandParserTest`, `FindCommandTest`, and
+`PersonMatchesFindCriteriaPredicateTest`.
+
+#### Design Considerations
+
+**Aspect: Command shape**
+
+* **Alternative 1 (current choice):** Keep one `find` command and select the search mode through prefixes.
+
+  * Pros: Preserves one stable command word, one execution path, and one filtered-list workflow for downstream
+    commands.
+  * Cons: The parser must actively reject invalid multi-prefix combinations.
+* **Alternative 2:** Introduce separate commands such as `find-patient` or `find-phone`.
+
+  * Pros: Each command can enforce simpler command-specific rules.
+  * Cons: Duplicates command dispatch, documentation, and future extension work.
+
+#### \[Proposed\] Future extension: role-specific filtering
+
+If a future iteration needs subtype-aware narrowing for workflows that mainly target patients, the cleaner extension
+is to keep `find` as a single command and add an optional role filter, for example `find role/patient n/Alice`.
+
+Keeping the role filter inside `find` is preferable to introducing `find-patient`, `find-doctor`, and
+`find-pharmacist` variants:
+
+* The current parser already centralises all `find` modes in `FindCommandParser`.
+* The current predicate already contains subtype-aware logic for NRIC lookups.
+* A future `role/` prefix would extend the existing predicate more cleanly than multiplying command words.
 
 ### \[Proposed\] Undo/redo feature
 
@@ -248,8 +361,8 @@ The following activity diagram summarizes what happens when a user executes a ne
 * **Alternative 2:** Individual command knows how to undo/redo by
   itself.
 
-  * Pros: Will use less memory (e.g. for `delete`, just save the person being deleted).
-  * Cons: We must ensure that the implementation of each individual command are correct.
+  * Pros: Will use less memory (e.g., for `delete`, just save the person being deleted).
+  * Cons: We must ensure that the implementation of each individual command is correct.
 
 _{more aspects and alternatives to be added}_
 
@@ -283,14 +396,12 @@ Clinic staff who manage patient and vendor information as part of daily clinic o
 
 **Value proposition**:
 
-- Digitises and reduce paper-based records
+- Digitises and reduces paper-based records
 - Faster information retrieval
 - Reduced human error (illegible handwriting, duplicate entries, etc.)
 - Easy to learn and use, designed for staff with basic computer skills
 - Lightweight and cost effective (minimal resources and no complex setup)
-- Speed up patient registration during busy hours
 - Improve data consistency across patient and vendor records
-- Decrease dependency on individual staff memory
 - Support quicker onboarding of new staff
 
 ### User stories
@@ -363,7 +474,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
   * 4a1. ClinicBook shows the potential duplicate record.
   * Use case ends.
-* 4b. ClinicBook find a duplicate record with the same name or phone number
+* 4b. ClinicBook finds a duplicate record with the same name or phone number
 
   * 4b1. ClinicBook shows the potential duplicate record.
   * 4b2. ClinicBook requests for confirmation.
@@ -469,7 +580,6 @@ Use case ends.
   *a2. System Administrator confirms
   Use case ends.
 
-
 **Use case: UC5 - Search for Patient by Name, NRIC, or Phone Number**
 
 **Actor:** Registration Staff
@@ -490,23 +600,23 @@ Use case ends.
 **Extensions**
 
 * 3a. Registration Staff enters an empty search keyword.
+
   * 3a1. ClinicBook shows an error message.
   * 3a2. Registration Staff enters a valid search keyword.
   * Use case resumes at step 4.
-
 * 4a. The search keyword is not in a valid name, NRIC, or phone number format.
+
   * 4a1. ClinicBook shows an error message.
   * 4a2. Registration Staff enters a valid search keyword.
   * Use case resumes at step 4.
-
 * 5a. No patient records match the search keyword.
+
   * 5a1. ClinicBook informs Registration Staff that no matching records were found.
   * Use case ends.
-
 * *a. At any time, Registration Staff chooses to cancel the search.
+
   * *a1. ClinicBook cancels the search request.
   * Use case ends.
-
 
 **Use case: UC6 - Register a New Pharmacist**
 
@@ -528,24 +638,25 @@ Use case ends.
 **Extensions**
 
 * 3a. At least one of the fields (name, NRIC, contact number) are empty.
+
   * 3a1. ClinicBook shows an error message indicating the missing fields.
   * 3a2. System Administrator enters the missing information.
-  Steps 3a1–3a2 are repeated until all compulsory fields are provided.
-  Use case resumes at step 4.
-
+    Steps 3a1–3a2 are repeated until all compulsory fields are provided.
+    Use case resumes at step 4.
 * 3b. ClinicBook detects a duplicate pharmacist record with the same NRIC.
-  * 3b1. ClinicBook shows the potential duplicate record.
-  Use case ends.
 
+  * 3b1. ClinicBook shows the potential duplicate record.
+    Use case ends.
 * 3c. System Administrator enters invalid input.
+
   * 3c1. ClinicBook shows an error message indicating the correct input format.
   * 3c2. System Administrator re-enters the particulars.
-  Use case resumes at step 4.
-
+    Use case resumes at step 4.
 * *a. At any time, System Administrator chooses to cancel the registration.
+
   * *a1. ClinicBook requests confirmation for cancellation.
   * *a2. System Administrator confirms.
-  Use case ends.
+    Use case ends.
 
 **Use case: UC7 - Add Remark to Existing Patient**
 
@@ -881,12 +992,12 @@ Use case ends.
 
 ### Non-Functional Requirements
 
-1.  Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
-2.  Should be able to hold up to 1000 persons without a noticeable sluggishness in performance for typical usage.
-3.  A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
-4.  All operations should complete within 2 seconds
-5.  The system supports only one user accessing the data at a time.
-6.  Data should persist unless the user deletes the data file.
+1. Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
+2. Should be able to hold up to 1000 persons without noticeable sluggishness in performance for typical usage.
+3. A user with above-average typing speed for regular English text (i.e., not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
+4. All operations should complete within 2 seconds.
+5. The system supports only one user accessing the data at a time.
+6. Data should persist unless the user deletes the data file.
 7. The system should be able to recover gracefully from unexpected shutdowns without data loss for committed transactions.
 8. The application should handle invalid or malformed data files without crashing and provide appropriate error messages.
 9. The system should enforce role-based access control so that users can only perform actions permitted by their assigned roles (e.g., only System Administrators can register pharmacists).
@@ -894,7 +1005,6 @@ Use case ends.
 11. The system should record auditable metadata (e.g., user role and timestamp) for high-risk actions such as prescription updates, dispensing, and patient record purge.
 12. The system should prevent duplicate patient registration by requiring a pre-registration search check by name, NRIC, or phone number.
 13. The system should complete patient search operations within 2 seconds for datasets up to 1000 records under typical clinic usage.
-
 
 ### Glossary
 
@@ -926,12 +1036,13 @@ testers are expected to do more *exploratory* testing.
 
 1. Initial launch
 
-   1. Download the jar file and copy into an empty folder
-   2. Double-click the jar file Expected: Shows the GUI with a set of sample contacts. The window size may not be optimum.
+   1. Download the jar file and copy it into an empty folder.
+   2. Double-click the jar file.<br>
+      Expected: Shows the GUI with a set of sample contacts. The window size may not be optimum.
 2. Saving window preferences
 
    1. Resize the window to an optimum size. Move the window to a different location. Close the window.
-   2. Re-launch the app by double-clicking the jar file.`<br>`
+   2. Re-launch the app by double-clicking the jar file.<br>
       Expected: The most recent window size and location is retained.
 3. _{ more test cases … }_
 
@@ -940,12 +1051,12 @@ testers are expected to do more *exploratory* testing.
 1. Deleting a person while all persons are being shown
 
    1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
-   2. Test case: `delete 1<br>`
-      Expected: First contact is deleted from the list. Details of the deleted contact shown in the status message. Timestamp in the status bar is updated.
-   3. Test case: `delete 0<br>`
-      Expected: No person is deleted. Error details shown in the status message. Status bar remains the same.
-   4. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)`<br>`
-      Expected: Similar to previous.
+   2. Test case: `delete 1`<br>
+      Expected: First contact is deleted from the list. Details of the deleted contact are shown in the status message. Timestamp in the status bar is updated.
+   3. Test case: `delete 0`<br>
+      Expected: No person is deleted. Error details are shown in the status message. Status bar remains the same.
+   4. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size).<br>
+      Expected: Similar to the previous test case.
 2. _{ more test cases … }_
 
 ### Saving data
