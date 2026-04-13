@@ -41,6 +41,11 @@ public class AddPatientCommandParser implements Parser<AddPatientCommand> {
     private static final String MESSAGE_INVALID_DOB =
             "DOB must be a valid date in yyyy-MM-dd format and cannot be in the future.";
     private static final String MESSAGE_INVALID_SEX = "Sex must be one of: MALE, FEMALE, INTERSEX.";
+    private static final String MESSAGE_NRIC_DOB_MISMATCH =
+            "NRIC/FIN's first two digits must match the last two digits of the birth year.";
+    private static final String MESSAGE_NRIC_CENTURY_MISMATCH =
+            "S-prefix NRIC must correspond to a birth year before 2000; "
+            + "T-prefix NRIC must correspond to a birth year from 2000 onwards.";
 
     /**
      * Parses the given {@code String} of arguments and returns an AddPatientCommand object.
@@ -68,6 +73,7 @@ public class AddPatientCommandParser implements Parser<AddPatientCommand> {
         Name name = ParserUtil.parseName(argMultimap.getValue(PREFIX_NAME).get());
         NRIC nric = parseNric(argMultimap.getValue(PREFIX_NRIC).get());
         LocalDate dob = parseDob(argMultimap.getValue(PREFIX_DOB).get());
+        validateNricDobConsistency(nric, dob);
         Sex sex = parseSex(argMultimap.getValue(PREFIX_SEX).get());
 
         Email email = ParserUtil.parseEmail(argMultimap.getValue(PREFIX_EMAIL).get());
@@ -80,6 +86,22 @@ public class AddPatientCommandParser implements Parser<AddPatientCommand> {
         Person person = new Person(name, phone, email, address);
         Patient patient = new Patient(person, allergies, nric, dob, sex);
         return new AddPatientCommand(patient);
+    }
+
+    private static void validateNricDobConsistency(NRIC nric, LocalDate dob) throws ParseException {
+        char prefix = nric.value.charAt(0);
+        int birthYear = dob.getYear();
+        if (prefix == 'S' && birthYear >= 2000) {
+            throw new ParseException(MESSAGE_NRIC_CENTURY_MISMATCH);
+        }
+        if (prefix == 'T' && birthYear < 2000) {
+            throw new ParseException(MESSAGE_NRIC_CENTURY_MISMATCH);
+        }
+        String nricYearDigits = nric.value.substring(1, 3);
+        String dobYearDigits = String.format("%02d", birthYear % 100);
+        if (!nricYearDigits.equals(dobYearDigits)) {
+            throw new ParseException(MESSAGE_NRIC_DOB_MISMATCH);
+        }
     }
 
     private static NRIC parseNric(String nricInput) throws ParseException {
