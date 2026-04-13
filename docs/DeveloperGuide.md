@@ -186,7 +186,7 @@ The sequence diagram below shows the execution flow for `find n/Alice Bob`.
 <div markdown="span" class="alert alert-info">:information_source: **Note:** This is a partial sequence diagram. For simplicity, it omits some intermediate objects and lower-level interactions within the `Model` component.</div>
 
 1. `LogicManager` forwards the raw user input to `ClinicBookParser`.
-2. `ClinicBookParser` recognises the `find` command word and delegates argument parsing to `FindCommandParser`.
+2. `ClinicBookParser` recognises the `find` command word, creates a `FindCommandParser`, and delegates argument parsing to it.
 3. `FindCommandParser` validates the selected search criterion and creates a `FindCommand` containing a predicate that
    represents the search criteria.
 4. During execution, `FindCommand` passes that predicate to the `Model` component to update the filtered person list.
