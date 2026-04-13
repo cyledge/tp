@@ -1032,7 +1032,7 @@ and may include prescriptions dispensed by pharmacists. These requirements led t
 
 A significant amount of effort was saved by reusing AB3 as the project base. AB3 provided the initial JavaFX UI structure, command parsing architecture, JSON storage approach, Gradle setup, testing framework, and documentation structure. This reduced the effort required for general application infrastructure, allowing the team to focus on clinic-specific functionality. The team's adaptation work is reflected especially in the person subtype model, role-specific add commands, diagnosis and prescription handling, lab/imaging test ordering, subtype-aware JSON adapters, and command parsers for clinic workflows.
 
-Despite starting from AB3, ClinicBook achieved a broader domain model and a more integrated workflow. The final product supports registering patients, doctors, and pharmacists, searching by name, phone, or NRIC, recording diagnoses and prescriptions, ordering lab or imaging tests, and retrieving patient history. It also includes duplicate detection based on name, phone, or email during record creation. These features required coordinated changes across the Logic, Model, Storage, UI, testing, and documentation components.
+Despite starting from AB3, ClinicBook achieved a broader domain model and a more integrated workflow. The final product supports registering patients, doctors, and pharmacists, searching by name, phone, or NRIC, recording diagnoses and prescriptions, ordering lab or imaging tests, and retrieving patient history. These features required coordinated changes across the Logic, Model, Storage, UI, testing, and documentation components.
 
 ---
 
