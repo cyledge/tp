@@ -79,9 +79,10 @@ public class GetHistoryCommand extends Command {
     }
 
     private String formatMedicalHistory(List<Patient> matchedPatients, Map<Integer, String> personNameMap) {
+        String lineSep = System.lineSeparator();
         return matchedPatients.stream()
                 .map(patient -> formatPatientHistory(patient, personNameMap))
-                .collect(Collectors.joining("\n\n"));
+                .collect(Collectors.joining(lineSep + lineSep));
     }
 
     private String formatPatientHistory(Patient patient, Map<Integer, String> personNameMap) {
@@ -97,7 +98,7 @@ public class GetHistoryCommand extends Command {
     private String formatPatientHeader(Patient patient) {
         StringBuilder header = new StringBuilder();
         header.append(String.format("Medical history for %s (NRIC: %s)", patient.getName(), patient.getNric().value));
-        header.append("\n");
+        header.append(System.lineSeparator());
         header.append(String.format("Date of birth: %s", patient.getDateOfBirth()));
         return header.toString();
     }
