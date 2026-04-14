@@ -51,6 +51,12 @@ public class ClinicBookParserTest {
     }
 
     @Test
+    public void parseCommand_exitUpperCase() throws Exception {
+        assertTrue(parser.parseCommand("EXIT") instanceof ExitCommand);
+        assertTrue(parser.parseCommand("EXIT 3") instanceof ExitCommand);
+    }
+
+    @Test
     public void parseCommand_find() throws Exception {
         List<String> keywords = Arrays.asList("foo", "bar", "baz");
         FindCommand command = (FindCommand) parser.parseCommand(
@@ -78,6 +84,12 @@ public class ClinicBookParserTest {
         GetHistoryCommand command = (GetHistoryCommand) parser.parseCommand(
                 GetHistoryCommand.COMMAND_WORD + " nric/t1234567z");
         assertEquals(new GetHistoryCommand("T1234567Z"), command);
+    }
+
+    @Test
+    public void parseCommand_getHistoryUpperCaseCommandAndPrefix() throws Exception {
+        GetHistoryCommand command = (GetHistoryCommand) parser.parseCommand("GET-HISTORY NRIC/S1234567D");
+        assertEquals(new GetHistoryCommand("S1234567D"), command);
     }
 
     @Test
