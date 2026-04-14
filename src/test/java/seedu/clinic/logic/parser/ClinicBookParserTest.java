@@ -103,13 +103,6 @@ public class ClinicBookParserTest {
     }
 
     @Test
-    public void parseCommand_orderTestLegacyAlias() throws Exception {
-        String args = " id/1 test/Chest X-Ray testtype/IMAGING vd/2026-04-08 ordered/2";
-        assertTrue(parser.parseCommand(OrderTestCommand.LEGACY_COMMAND_WORD + args)
-                instanceof OrderTestCommand);
-    }
-
-    @Test
     public void parseCommand_list() throws Exception {
         assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD) instanceof ListCommand);
         assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD + " 3") instanceof ListCommand);

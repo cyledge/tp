@@ -90,7 +90,6 @@ public class ClinicBookParser {
             return new AddDiagnosisCommandParser().parse(arguments);
 
         case OrderTestCommand.COMMAND_WORD:
-        case OrderTestCommand.LEGACY_COMMAND_WORD:
             return new OrderTestCommandParser().parse(arguments);
 
         default:
